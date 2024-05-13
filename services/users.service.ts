@@ -1,6 +1,6 @@
 import { Transaction } from "sequelize";
 import { sequelize } from "../sequelize";
-import { initModels } from "../models/init-models";
+import { initModels, usersAttributes, usersCreationAttributes } from "../models/init-models";
 
 import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
@@ -14,7 +14,7 @@ const models = initModels(sequelize);
  * create user
  * @returns information about INSERT
  */
-export async function insertUser(email: string, username: string, password: string) {
+export async function insertUser(email: string, username: string, password: string): Promise<usersCreationAttributes> {
   const salt: string = crypto.randomBytes(10).toString('base64');
   const hashedPassword: string = getHashedPassword(password, salt);
 
@@ -37,7 +37,7 @@ export async function insertUser(email: string, username: string, password: stri
  * search for user specified by email and password  
  * @returns jwt token
  */
-export async function searchUser(email: string, password: string) {
+export async function searchUser(email: string, password: string): Promise<string> {
   const result = sequelize.transaction(async (t: Transaction) => {
     const user = await models.users.findOne({
       where: {
@@ -73,7 +73,7 @@ export async function searchUser(email: string, password: string) {
  * search for user specified by email
  * @returns email provided
  */
-export async function searchUserByEmail(email: string) {
+export async function searchUserByEmail(email: string): Promise<string> {
   const result = sequelize.transaction(async (t: Transaction) => {
     const user = models.users.findOne({
       where: {
@@ -96,7 +96,7 @@ export async function searchUserByEmail(email: string) {
  * the user must be guaranteed to exist 
  * @returns information about UPDATE
  */
-export async function updateUserPassword(email: string, password: string) {
+export async function updateUserPassword(email: string, password: string): Promise<[affectedCount: number]> {
   const salt = crypto.randomBytes(10).toString('base64');
   const hashedPassword = getHashedPassword(password, salt);
 

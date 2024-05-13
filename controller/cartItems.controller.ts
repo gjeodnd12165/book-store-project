@@ -8,9 +8,10 @@ import { StatusCodes } from 'http-status-codes';
 
 
 export async function createCartItem (req: express.Request<{}, {}, {
-  bookId: string,
-  quantity: string
-}, {}>, res: express.Response) {
+    bookId: string,
+    quantity: string
+  }, {}>, res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { bookId, quantity } = req.body;
   const userId = req.token.id;
 
@@ -20,8 +21,9 @@ export async function createCartItem (req: express.Request<{}, {}, {
 }
 
 export async function getCartItems (req: express.Request<{}, {}, {
-  cartItemIds: string[]
-}, {}>, res: express.Response) {
+    cartItemIds: string[]
+  }, {}>, res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { cartItemIds } = req.body;
   const userId = req.token.id;
 
@@ -31,7 +33,7 @@ export async function getCartItems (req: express.Request<{}, {}, {
 }
 
 // need different name
-export async function deleteCartItemById (req: express.Request, res: express.Response) {
+export async function deleteCartItemById (req: express.Request, res: express.Response): Promise<express.Response<{}, Record<string, any>>> {
   const { cartItemId } = req.params;
   const userId = req.token.id;
 

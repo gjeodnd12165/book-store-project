@@ -13,7 +13,7 @@ export async function getBooks (
     page?: string
   }>, 
   res: express.Response
-) {
+): Promise<express.Response<{}, Record<string, any>>> {
   const { categoryId, recentDays, listNum, page } = req.query;
 
   const books = await searchBooks(categoryId, recentDays, listNum, page);
@@ -21,7 +21,12 @@ export async function getBooks (
   return res.status(StatusCodes.OK).json(books);
 }
 
-export async function getBook (req: express.Request, res: express.Response) {
+export async function getBook (
+  req: express.Request<{
+    bookId: string
+  }, {}, {}, {}>, 
+  res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { bookId } = req.params;
   const userId = req.token.id;
 

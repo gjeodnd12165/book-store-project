@@ -8,7 +8,7 @@ const logError = (
   req: express.Request,
   res: express.Response, 
   next: express.NextFunction
-  ) => {
+  ): void => {
   console.error(`
   === This is from logError  ===
   ${err.stack}
@@ -25,14 +25,16 @@ const handleAuthError = (
   req: express.Request,
   res: express.Response, 
   next: express.NextFunction
-  ) => {
+  ): express.Response<{
+    message: string
+  }, Record<string, any>> | void => {
   if (err instanceof jsonwebtoken.JsonWebTokenError) {
-    res.status(StatusCodes.UNAUTHORIZED).json({
+    return res.status(StatusCodes.UNAUTHORIZED).json({
       "message": "적절하지 않은 토큰입니다"
     });
   }
   else if (err instanceof jsonwebtoken.TokenExpiredError) {
-    res.status(StatusCodes.UNAUTHORIZED).json({
+    return res.status(StatusCodes.UNAUTHORIZED).json({
       "message": "토큰이 만료되었습니다"
     });
   }
@@ -46,7 +48,7 @@ const handleVarError = (
   req: express.Request,
   res: express.Response, 
   next: express.NextFunction
-) => {
+): express.Response<{}, Record<string, any>> | void => {
   if (err instanceof customErrors.IdNotConvertableError) {
     return res.status(StatusCodes.BAD_REQUEST).end();
   } 
@@ -61,7 +63,7 @@ const handleVarError = (
   }
 }
 
-const asyncWrapper = (fn: Function) => {
+const asyncWrapper = (fn: (...args: [express.Request, express.Response, express.NextFunction]) => unknown) => {
   return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
       return await fn(req, res, next);
@@ -69,7 +71,7 @@ const asyncWrapper = (fn: Function) => {
       next(err);
     }
   }
-} 
+}
 
 export {
   logError,

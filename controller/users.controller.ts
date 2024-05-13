@@ -9,10 +9,11 @@ import { StatusCodes } from 'http-status-codes';
 
 
 export async function createUser (req: express.Request<{}, {}, {
-  email: string,
-  username: string,
-  password: string
-}, {}>, res: express.Response) {
+    email: string,
+    username: string,
+    password: string
+  }, {}>, res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { email, username, password } = req.body;
 
   const result = await insertUser(email, username, password);
@@ -21,9 +22,10 @@ export async function createUser (req: express.Request<{}, {}, {
 }
 
 export async function issueUserToken(req: express.Request<{}, {}, {
-  email: string,
-  password: string
-}, {}>, res: express.Response) {
+    email: string,
+    password: string
+  }, {}>, res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { email, password } = req.body;
 
   const token: string = await searchUser(email, password);
@@ -34,8 +36,9 @@ export async function issueUserToken(req: express.Request<{}, {}, {
 }
 
 export async function confirmUserPassword(req: express.Request<{}, {}, {
-  email: string
-}, {}>, res: express.Response) {
+    email: string
+  }, {}>, res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { email } = req.body;
 
   const returnedEmail = await searchUserByEmail(email);
@@ -46,9 +49,10 @@ export async function confirmUserPassword(req: express.Request<{}, {}, {
 }
 
 export async function patchUserPassword(req: express.Request<{}, {}, {
-  email: string,
-  password: string
-}, {}>, res: express.Response) {
+    email: string,
+    password: string
+  }, {}>, res: express.Response
+): Promise<express.Response<{}, Record<string, any>>> {
   const { email, password } = req.body;
 
   const result = await updateUserPassword(email, password);

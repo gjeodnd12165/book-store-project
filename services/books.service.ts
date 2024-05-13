@@ -15,7 +15,7 @@ export async function searchBooks(
   recentDays: string | undefined, 
   listNum: string | undefined = '20', 
   page: string | undefined = '1'
-) {
+): Promise<booksAttributes[]> {
   if (
     isNaN(Number(categoryId)) ||
     isNaN(Number(recentDays)) ||
@@ -79,7 +79,7 @@ export async function searchBooks(
 export async function searchBook(
   bookId: string, 
   userId: string | undefined
-) {
+): Promise<booksAttributes> {
   if (isNaN(Number(bookId))) {
     throw new IdNotConvertableError('bookId should be able to be casted to a number');
   }

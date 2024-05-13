@@ -1,5 +1,5 @@
 import { Op, Transaction, WhereOptions } from 'sequelize';
-import { cartItemsAttributes, initModels } from '../models/init-models';
+import { cartItemsAttributes, cartItemsCreationAttributes, initModels } from '../models/init-models';
 import { sequelize } from '../sequelize';
 import { IdNotConvertableError } from '../errors';
 
@@ -13,7 +13,7 @@ export async function insertCartItem (
   bookId: string, 
   quantity: string, 
   userId: string
-) {
+): Promise<cartItemsCreationAttributes> {
   if (
     isNaN(Number(bookId)) ||
     isNaN(Number(quantity)) ||
@@ -39,10 +39,10 @@ export async function insertCartItem (
 /**
  * @returns information of found cartItems
  */
-export async function searchCartItems(
+export async function searchCartItems (
   cartItemIds: string[] | undefined,
   userId: string
-) {
+): Promise<cartItemsAttributes[]> {
   console.log(cartItemIds);
   if (
     cartItemIds?.filter((id: string) => isNaN(Number(id))).length ||
@@ -91,7 +91,7 @@ export async function searchCartItems(
 export async function deleteCartItem(
   cartItemId: string,
   userId: string
-) {
+): Promise<number> {
   if (
     isNaN(Number(cartItemId)) ||
     isNaN(Number(userId))

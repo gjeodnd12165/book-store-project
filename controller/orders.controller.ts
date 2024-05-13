@@ -16,7 +16,7 @@ export async function createOrder(
       contact: string
     }
   }, {}>, res: express.Response
-) {
+): Promise<express.Response<{}, Record<string, any>>> {
   const { cartItemIds, delivery } = req.body;
   const userId = req.token.id;
 
@@ -25,7 +25,7 @@ export async function createOrder(
   return res.status(StatusCodes.OK).json(result);
 }
 
-export async function getOrders(req: express.Request, res: express.Response) {
+export async function getOrders(req: express.Request, res: express.Response): Promise<express.Response<{}, Record<string, any>>> {
   const userId = req.token.id;
 
   const result = await searchOrders(userId);
@@ -33,7 +33,7 @@ export async function getOrders(req: express.Request, res: express.Response) {
   return res.status(StatusCodes.OK).json(result);
 }
 
-export async function getOrder(req: express.Request, res: express.Response) {
+export async function getOrder(req: express.Request, res: express.Response): Promise<express.Response<{}, Record<string, any>>> {
   const { orderId } = req.params;
   const userId = req.token.id;
 

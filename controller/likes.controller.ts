@@ -5,7 +5,7 @@ import {
 import * as express from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-export async function createUserLikeBook (req: express.Request, res: express.Response) {
+export async function createUserLikeBook (req: express.Request, res: express.Response): Promise<express.Response<{}, Record<string, any>>> {
   const { bookId } = req.params;
   const userId = req.token.id;
 
@@ -14,7 +14,7 @@ export async function createUserLikeBook (req: express.Request, res: express.Res
   return res.status(StatusCodes.OK).json(result);
 }
 
-export async function deleteUserLikeBook (req: express.Request, res: express.Response) {
+export async function deleteUserLikeBook (req: express.Request, res: express.Response): Promise<express.Response<{}, Record<string, any>>> {
   const { bookId } = req.params;
   const userId = req.token.id;
 

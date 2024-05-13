@@ -1,7 +1,6 @@
-import { Op, Transaction, WhereOptions } from 'sequelize';
-import { booksAttributes, cartItems, initModels } from '../models/init-models';
+import { Op, Transaction } from 'sequelize';
+import { cartItems, initModels, orderedBooksAttributes, ordersAttributes } from '../models/init-models';
 import { sequelize } from '../sequelize';
-import { Literal } from 'sequelize/types/utils';
 import { IdNotConvertableError } from '../errors';
 
 const models = initModels(sequelize);
@@ -17,7 +16,10 @@ export async function insertOrder(
     contact: string
   },
   userId: string
-) {
+): Promise<{
+  created: orderedBooksAttributes[],
+  deletedRows: number
+}> {
   if (
     cartItemIds?.filter((id: string) => isNaN(Number(id))).length ||
     isNaN(Number(userId))
@@ -82,7 +84,7 @@ export async function insertOrder(
  */
 export async function searchOrders(
   userId: string
-) {
+): Promise<orderedBooksAttributes[]> {
   if (
     isNaN(Number(userId))
   ) {
@@ -131,7 +133,7 @@ export async function searchOrders(
 export async function searchOrder(
   orderId: string, 
   userId: string
-) {
+): Promise<orderedBooksAttributes[]> {
   if (
     isNaN(Number(orderId)) ||
     isNaN(Number(userId))

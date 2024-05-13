@@ -1,6 +1,6 @@
 import { Transaction } from "sequelize";
 import { sequelize } from "../sequelize";
-import { initModels } from "../models/init-models";
+import { initModels, likesCreationAttributes } from "../models/init-models";
 import { IdNotConvertableError } from "../errors";
 
 const models = initModels(sequelize);
@@ -10,7 +10,7 @@ const models = initModels(sequelize);
  * inserts relationship who like which book to Likes table
  * @returns information about INSERT
  */
-export async function insertLike(bookId: string, userId: string) {
+export async function insertLike(bookId: string, userId: string): Promise<likesCreationAttributes> {
   if (isNaN(Number(bookId))) {
     throw new IdNotConvertableError('bookId should be able to be converted to number.');
   }
@@ -30,7 +30,7 @@ export async function insertLike(bookId: string, userId: string) {
  * deletes record from Like table with specified bookId and userId
  * @returns number of destroyed rows by DELETE
  */
-export async function deleteLike(bookId: string, userId: string) {
+export async function deleteLike(bookId: string, userId: string): Promise<number> {
   if (isNaN(Number(bookId))) {
     throw new IdNotConvertableError('bookId should be able to be converted to number.');
   }
