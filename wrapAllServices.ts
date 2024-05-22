@@ -6,6 +6,7 @@ export function wrapAllServices(app: express.Express, wrapper: (fn: Function) =>
   }).forEach((routerLayer) => {
     const router = routerLayer.handle;
     router.stack.filter((controllerLayer) => {
+      console.log(controllerLayer);
       return controllerLayer.name === 'bound dispatch';
     }).forEach((controllerLayer) => {
       controllerLayer.route.stack.forEach((serviceLayer) => {

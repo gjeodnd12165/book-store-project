@@ -63,13 +63,12 @@ const handleVarError = (
   }
 }
 
-const asyncWrapper = (fn: (...args: [express.Request, express.Response, express.NextFunction]) => unknown) => {
-  return async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try {
-      return await fn(req, res, next);
-    } catch (err) {
-      next(err);
-    }
+const asyncWrapper = (fn: (req: express.Request, res: express.Response, next: express.NextFunction) => unknown) => 
+  async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  try {
+    return await fn(req, res, next);
+  } catch (err) {
+    next(err);
   }
 }
 
