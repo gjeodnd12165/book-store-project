@@ -10,7 +10,6 @@ import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { OrderModule } from './order/order.module';
 import { UserModule } from './user/user.module';
-import { BookModule } from './book/book.module';
 
 @Module({
   imports: [
