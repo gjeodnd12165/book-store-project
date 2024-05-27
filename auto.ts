@@ -14,7 +14,7 @@ import {
     },
     metadata: {
       indices: true,
-      case: 'PASCAL',
+      case: 'CAMEL',
     },
     output: {
       clean: true,
