@@ -10,6 +10,8 @@ import { CategoryModule } from './category/category.module';
 import { LikeModule } from './like/like.module';
 import { OrderModule } from './order/order.module';
 import { UserModule } from './user/user.module';
+import { OrderedBookModule } from './ordered-book/ordered-book.module';
+import { DeliveryModule } from './delivery/delivery.module';
 
 @Module({
   imports: [
@@ -20,15 +22,17 @@ import { UserModule } from './user/user.module';
       username: 'root',
       password: 'root',
       database: 'bookStore',
-      models: [],
       autoLoadModels: true,
+      synchronize: true,
     }),
+    BookModule,
     CartItemModule,
     CategoryModule,
     LikeModule,
     OrderModule,
     UserModule,
-    BookModule,
+    OrderedBookModule,
+    DeliveryModule,
   ],
   controllers: [AppController, TestController],
   providers: [AppService, TestService],
