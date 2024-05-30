@@ -8,15 +8,15 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 
-export interface likeAttributes {
+export interface LikeAttributes {
   userId: number;
   bookId: number;
 }
 
 @Table({ tableName: 'like', timestamps: false })
-export class like
-  extends Model<likeAttributes, likeAttributes>
-  implements likeAttributes
+export class Like
+  extends Model<LikeAttributes, LikeAttributes>
+  implements LikeAttributes
 {
   @Column({ field: 'user_id', primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })

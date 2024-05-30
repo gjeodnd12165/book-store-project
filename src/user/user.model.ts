@@ -8,7 +8,7 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 
-export interface userAttributes {
+export interface UserAttributes {
   id?: number;
   email: string;
   username: string;
@@ -17,9 +17,9 @@ export interface userAttributes {
 }
 
 @Table({ tableName: 'user', timestamps: false })
-export class user
-  extends Model<userAttributes, userAttributes>
-  implements userAttributes
+export class User
+  extends Model<UserAttributes, UserAttributes>
+  implements UserAttributes
 {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
   @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })

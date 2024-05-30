@@ -3,27 +3,40 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { Sequelize } from 'sequelize-typescript';
 import { Book } from './book.model';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class BookService {
   constructor(
-    private sequelize: Sequelize,
-    private bookModel: Book,
+    @InjectModel(Book)
+    private readonly bookModel: typeof Book,
+    private readonly sequelize: Sequelize,
   ) {}
 
   create(createBookDto: CreateBookDto) {
     return 'This action adds a new book';
   }
 
-  findAll() {
-    return `This action returns all book`;
-  }
-
-  async findOne(id: number){
+  async findAll(): Promise<Book[] | null> {
     return await this.sequelize.transaction(async (t) => {
       const transactionHost = { transaction: t };
 
-      await this.bookModel.$get(keyof Book)
+      return await this.bookModel.findAll({
+        ...transactionHost,
+      });
+    });
+  }
+
+  async findOne(id: number): Promise<Book | null>{
+    return await this.sequelize.transaction(async (t) => {
+      const transactionHost = { transaction: t };
+
+      return await this.bookModel.findOne({
+        where: {
+          id: id,
+        },
+        ...transactionHost,
+      });
     });
   }
 

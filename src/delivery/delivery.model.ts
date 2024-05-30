@@ -8,7 +8,7 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 
-export interface deliveryAttributes {
+export interface DeliveryAttributes {
   id?: number;
   address: string;
   receiver: string;
@@ -16,9 +16,9 @@ export interface deliveryAttributes {
 }
 
 @Table({ tableName: 'delivery', timestamps: false })
-export class delivery
-  extends Model<deliveryAttributes, deliveryAttributes>
-  implements deliveryAttributes
+export class Delivery
+  extends Model<DeliveryAttributes, DeliveryAttributes>
+  implements DeliveryAttributes
 {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
   @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })

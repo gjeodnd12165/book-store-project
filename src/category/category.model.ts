@@ -8,15 +8,15 @@ import {
   ForeignKey,
 } from 'sequelize-typescript';
 
-export interface categoryAttributes {
+export interface CategoryAttributes {
   id: number;
   name: string;
 }
 
 @Table({ tableName: 'category', timestamps: false })
-export class category
-  extends Model<categoryAttributes, categoryAttributes>
-  implements categoryAttributes
+export class Category
+  extends Model<CategoryAttributes, CategoryAttributes>
+  implements CategoryAttributes
 {
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
