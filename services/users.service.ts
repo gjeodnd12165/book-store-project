@@ -1,6 +1,6 @@
 import { Transaction } from "sequelize";
 import { sequelize } from "../sequelize";
-import { initModels, usersAttributes, usersCreationAttributes } from "../models/init-models";
+import { initModels, userAttributes, userCreationAttributes } from "../models/init-models";
 
 import * as jwt from 'jsonwebtoken';
 import * as crypto from 'crypto';
@@ -14,12 +14,12 @@ const models = initModels(sequelize);
  * create user
  * @returns information about INSERT
  */
-export async function insertUser(email: string, username: string, password: string): Promise<usersCreationAttributes> {
+export async function insertUser(email: string, username: string, password: string): Promise<userCreationAttributes> {
   const salt: string = crypto.randomBytes(10).toString('base64');
   const hashedPassword: string = getHashedPassword(password, salt);
 
   const result = sequelize.transaction(async (t: Transaction) => {
-    const insertInfo = models.users.create({
+    const insertInfo = models.user.create({
       email: email,
       username: username,
       password: hashedPassword,
@@ -39,7 +39,7 @@ export async function insertUser(email: string, username: string, password: stri
  */
 export async function searchUser(email: string, password: string): Promise<string> {
   const result = sequelize.transaction(async (t: Transaction) => {
-    const user = await models.users.findOne({
+    const user = await models.user.findOne({
       where: {
         email: email
       },
@@ -75,7 +75,7 @@ export async function searchUser(email: string, password: string): Promise<strin
  */
 export async function searchUserByEmail(email: string): Promise<string> {
   const result = sequelize.transaction(async (t: Transaction) => {
-    const user = models.users.findOne({
+    const user = models.user.findOne({
       where: {
         email: email
       },
@@ -101,7 +101,7 @@ export async function updateUserPassword(email: string, password: string): Promi
   const hashedPassword = getHashedPassword(password, salt);
 
   const result = sequelize.transaction(async (t: Transaction) => {
-    const user = await models.users.findOne({
+    const user = await models.user.findOne({
       where: {
         email: email
       },
@@ -112,7 +112,7 @@ export async function updateUserPassword(email: string, password: string): Promi
       throw new PasswordEqualToPrevError("Password is equal to previous one");
     }
 
-    const updateInfo = models.users.update({
+    const updateInfo = models.user.update({
       password: hashedPassword,
       salt: salt,
     }, {

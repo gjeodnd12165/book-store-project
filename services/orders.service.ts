@@ -1,5 +1,5 @@
 import { Op, Transaction } from 'sequelize';
-import { cartItems, initModels, orderedBooksAttributes, ordersAttributes } from '../models/init-models';
+import { cartItem, initModels, orderedBookAttributes, orderAttributes } from '../models/init-models';
 import { sequelize } from '../sequelize';
 import { IdNotConvertableError } from '../errors';
 
@@ -17,7 +17,7 @@ export async function insertOrder(
   },
   userId: string
 ): Promise<{
-  created: orderedBooksAttributes[],
+  created: orderedBookAttributes[],
   deletedRows: number
 }> {
   if (
@@ -28,7 +28,7 @@ export async function insertOrder(
   }
   
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const createdDelivery = await models.deliveries.create({
+    const createdDelivery = await models.delivery.create({
       address: delivery.address,
       receiver: delivery.receiver,
       contact: delivery.contact
@@ -36,14 +36,14 @@ export async function insertOrder(
       transaction: t
     });
 
-    const createdOrder = await models.orders.create({
+    const createdOrder = await models.order.create({
       delivery_id: createdDelivery.id,
       user_id: +userId
     }, {
       transaction: t
     });
 
-    const cartItems = await models.cartItems.findAll({
+    const cartItem = await models.cartItem.findAll({
       where: {
         id: {
           [Op.in]: cartItemIds.map((id: string) => +id)
@@ -52,8 +52,8 @@ export async function insertOrder(
       transaction: t
     });
 
-    const createdOrderedBook = await models.orderedBooks.bulkCreate(
-      cartItems.map((cartItem: cartItems) => ({
+    const createdOrderedBook = await models.orderedBook.bulkCreate(
+      cartItem.map((cartItem: cartItem) => ({
         id: cartItem.id,
         order_id: createdOrder.id,
         book_id: cartItem.book_id,
@@ -62,7 +62,7 @@ export async function insertOrder(
       transaction: t
     });
 
-    const deleteCount = await models.cartItems.destroy({
+    const deleteCount = await models.cartItem.destroy({
       where: {
         id: {
           [Op.in]: cartItemIds.map((id: string) => +id)
@@ -80,11 +80,11 @@ export async function insertOrder(
 }
 
 /**
- * @returns information of found orders
+ * @returns information of found order
  */
 export async function searchOrders(
   userId: string
-): Promise<orderedBooksAttributes[]> {
+): Promise<orderedBookAttributes[]> {
   if (
     isNaN(Number(userId))
   ) {
@@ -92,37 +92,37 @@ export async function searchOrders(
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const orders = await models.orderedBooks.findAll({
+    const order = await models.orderedBook.findAll({
       attributes: [
         ['order_id', 'orderId'],
         [sequelize.fn('COUNT', sequelize.col('*')), 'totalTypes'],
-        [sequelize.fn('SUM', sequelize.literal('books.price*orderedBooks.quantity')), 'totalPrice'],
+        [sequelize.fn('SUM', sequelize.literal('book.price*orderedBook.quantity')), 'totalPrice'],
         [sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity']
       ],
       include: [
         {
-          model: models.orders,
-          as: 'orders',
+          model: models.order,
+          as: 'order',
           attributes: ['createdAt'],
           where: { user_id: userId },
           include: [
             {
-              model: models.deliveries,
-              as: 'deliveries',
+              model: models.delivery,
+              as: 'delivery',
               attributes: ['address', 'receiver', 'contact']
             }
           ]
         },
         {
-          model: models.books,
-          as: 'books',
+          model: models.book,
+          as: 'book',
           attributes: ['title']
         }
       ],
       group: ['order_id'],
       transaction: t
     });
-    return orders;
+    return order;
   });
   return result;
 }
@@ -133,7 +133,7 @@ export async function searchOrders(
 export async function searchOrder(
   orderId: string, 
   userId: string
-): Promise<orderedBooksAttributes[]> {
+): Promise<orderedBookAttributes[]> {
   if (
     isNaN(Number(orderId)) ||
     isNaN(Number(userId))
@@ -142,10 +142,10 @@ export async function searchOrder(
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const detailedOrder = await models.orderedBooks.findAll({
+    const detailedOrder = await models.orderedBook.findAll({
       include: [
         {
-          model: models.orders,
+          model: models.order,
           required: false,
           where: {
             user_id: userId
@@ -153,13 +153,13 @@ export async function searchOrder(
           attributes: [
             ['user_id', 'userId']
           ],
-          as: 'orders'
+          as: 'order'
         },
         {
-          model: models.books,
+          model: models.book,
           required: false,
           attributes: ['title', 'author', 'price'],
-          as: 'books'
+          as: 'book'
         }
       ],
       attributes: [

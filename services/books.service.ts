@@ -1,5 +1,5 @@
 import { Op, Transaction, WhereOptions } from 'sequelize';
-import { booksAttributes, initModels } from '../models/init-models';
+import { bookAttributes, initModels } from '../models/init-models';
 import { sequelize } from '../sequelize';
 import { Literal } from 'sequelize/types/utils';
 import { IdNotConvertableError } from '../errors';
@@ -8,14 +8,14 @@ const models = initModels(sequelize);
 
 
 /**
- * @returns information of found books
+ * @returns information of found book
  */
 export async function searchBooks(
   categoryId: string | undefined, 
   recentDays: string | undefined, 
   listNum: string | undefined = '20', 
   page: string | undefined = '1'
-): Promise<booksAttributes[]> {
+): Promise<bookAttributes[]> {
   if (
     isNaN(Number(categoryId)) ||
     isNaN(Number(recentDays)) ||
@@ -46,18 +46,18 @@ export async function searchBooks(
       };
     }
 
-    const books = await models.books.findAll({
+    const book = await models.book.findAll({
       include: [
         {
-          model: models.categories,
+          model: models.category,
           required: false,
           attributes: [],
-          as: 'categories'
+          as: 'category'
         }
       ],
       attributes: {
         include: [
-          [sequelize.col('categories.name'), 'category_name']
+          [sequelize.col('category.name'), 'category_name']
         ]
       },
       where: {
@@ -68,7 +68,7 @@ export async function searchBooks(
       transaction: t,
     });
 
-    return books;
+    return book;
   });
   return result;
 }
@@ -79,14 +79,14 @@ export async function searchBooks(
 export async function searchBook(
   bookId: string, 
   userId: string | undefined
-): Promise<booksAttributes> {
+): Promise<bookAttributes> {
   if (isNaN(Number(bookId))) {
     throw new IdNotConvertableError('bookId should be able to be casted to a number');
   }
   
   const result = await sequelize.transaction(async (t: Transaction) => {
 
-    let condition: WhereOptions<booksAttributes> = {
+    let condition: WhereOptions<bookAttributes> = {
       id: +bookId
     };
 
@@ -98,22 +98,22 @@ export async function searchBook(
       ]
     }
 
-    const book = await models.books.findOne({
+    const book = await models.book.findOne({
       include: [
         {
-          model: models.categories,
+          model: models.category,
           required: false,
           attributes: [],
-          as: 'categories'
+          as: 'category'
         }
       ],
       attributes: {
         include:[
           [
-            sequelize.col('categories.name'), 'category_name'
+            sequelize.col('category.name'), 'category_name'
           ],
           [
-            sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.book_id = books.id)'),
+            sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.book_id = book.id)'),
             'likes'
           ],
           isLiked

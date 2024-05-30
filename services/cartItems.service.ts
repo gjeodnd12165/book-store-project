@@ -1,5 +1,5 @@
 import { Op, Transaction, WhereOptions } from 'sequelize';
-import { cartItemsAttributes, cartItemsCreationAttributes, initModels } from '../models/init-models';
+import { cartItemAttributes, cartItemCreationAttributes, initModels } from '../models/init-models';
 import { sequelize } from '../sequelize';
 import { IdNotConvertableError } from '../errors';
 
@@ -13,7 +13,7 @@ export async function insertCartItem (
   bookId: string, 
   quantity: string, 
   userId: string
-): Promise<cartItemsCreationAttributes> {
+): Promise<cartItemCreationAttributes> {
   if (
     isNaN(Number(bookId)) ||
     isNaN(Number(quantity)) ||
@@ -23,7 +23,7 @@ export async function insertCartItem (
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const insertInfo = await models.cartItems.create({
+    const insertInfo = await models.cartItem.create({
       book_id: +bookId,
       quantity: +quantity,
       user_id: +userId
@@ -37,12 +37,12 @@ export async function insertCartItem (
 }
 
 /**
- * @returns information of found cartItems
+ * @returns information of found cartItem
  */
 export async function searchCartItems (
   cartItemIds: string[] | undefined,
   userId: string
-): Promise<cartItemsAttributes[]> {
+): Promise<cartItemAttributes[]> {
   console.log(cartItemIds);
   if (
     cartItemIds?.filter((id: string) => isNaN(Number(id))).length ||
@@ -52,7 +52,7 @@ export async function searchCartItems (
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    let condition: WhereOptions<cartItemsAttributes> = {
+    let condition: WhereOptions<cartItemAttributes> = {
       user_id: +userId
     };
 
@@ -65,13 +65,13 @@ export async function searchCartItems (
       }
     }
 
-    const cartItems = await models.cartItems.findAll({
+    const cartItem = await models.cartItem.findAll({
       include: [
         {
-          model: models.books,
+          model: models.book,
           required: false,
           attributes: ['title', 'summary', 'price'],
-          as: 'books'
+          as: 'book'
         }
       ],
       where: {
@@ -80,7 +80,7 @@ export async function searchCartItems (
       transaction: t
     });
     
-    return cartItems;
+    return cartItem;
   });
   return result;
 }
@@ -100,7 +100,7 @@ export async function deleteCartItem(
   }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
-    const deleteCount = await models.cartItems.destroy({
+    const deleteCount = await models.cartItem.destroy({
       where: {
         id: +cartItemId,
         user_id: +userId

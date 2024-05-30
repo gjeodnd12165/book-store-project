@@ -1,90 +1,90 @@
 import type { Sequelize } from "sequelize";
-import { books as _books } from "./books";
-import type { booksAttributes, booksCreationAttributes } from "./books";
-import { cartItems as _cartItems } from "./cartItems";
-import type { cartItemsAttributes, cartItemsCreationAttributes } from "./cartItems";
-import { categories as _categories } from "./categories";
-import type { categoriesAttributes, categoriesCreationAttributes } from "./categories";
-import { deliveries as _deliveries } from "./deliveries";
-import type { deliveriesAttributes, deliveriesCreationAttributes } from "./deliveries";
-import { likes as _likes } from "./likes";
-import type { likesAttributes, likesCreationAttributes } from "./likes";
-import { orderedBooks as _orderedBooks } from "./orderedBooks";
-import type { orderedBooksAttributes, orderedBooksCreationAttributes } from "./orderedBooks";
-import { orders as _orders } from "./orders";
-import type { ordersAttributes, ordersCreationAttributes } from "./orders";
-import { users as _users } from "./users";
-import type { usersAttributes, usersCreationAttributes } from "./users";
+import { book as _book } from "./book";
+import type { bookAttributes, bookCreationAttributes } from "./book";
+import { cartItem as _cartItem } from "./cartItem";
+import type { cartItemAttributes, cartItemCreationAttributes } from "./cartItem";
+import { category as _category } from "./category";
+import type { categoryAttributes, categoryCreationAttributes } from "./category";
+import { delivery as _delivery } from "./delivery";
+import type { deliveryAttributes, deliveryCreationAttributes } from "./delivery";
+import { like as _like } from "./like";
+import type { likeAttributes, likeCreationAttributes } from "./like";
+import { order as _order } from "./order";
+import type { orderAttributes, orderCreationAttributes } from "./order";
+import { orderedBook as _orderedBook } from "./orderedBook";
+import type { orderedBookAttributes, orderedBookCreationAttributes } from "./orderedBook";
+import { user as _user } from "./user";
+import type { userAttributes, userCreationAttributes } from "./user";
 
 export {
-  _books as books,
-  _cartItems as cartItems,
-  _categories as categories,
-  _deliveries as deliveries,
-  _likes as likes,
-  _orderedBooks as orderedBooks,
-  _orders as orders,
-  _users as users,
+  _book as book,
+  _cartItem as cartItem,
+  _category as category,
+  _delivery as delivery,
+  _like as like,
+  _order as order,
+  _orderedBook as orderedBook,
+  _user as user,
 };
 
 export type {
-  booksAttributes,
-  booksCreationAttributes,
-  cartItemsAttributes,
-  cartItemsCreationAttributes,
-  categoriesAttributes,
-  categoriesCreationAttributes,
-  deliveriesAttributes,
-  deliveriesCreationAttributes,
-  likesAttributes,
-  likesCreationAttributes,
-  orderedBooksAttributes,
-  orderedBooksCreationAttributes,
-  ordersAttributes,
-  ordersCreationAttributes,
-  usersAttributes,
-  usersCreationAttributes,
+  bookAttributes,
+  bookCreationAttributes,
+  cartItemAttributes,
+  cartItemCreationAttributes,
+  categoryAttributes,
+  categoryCreationAttributes,
+  deliveryAttributes,
+  deliveryCreationAttributes,
+  likeAttributes,
+  likeCreationAttributes,
+  orderAttributes,
+  orderCreationAttributes,
+  orderedBookAttributes,
+  orderedBookCreationAttributes,
+  userAttributes,
+  userCreationAttributes,
 };
 
 export function initModels(sequelize: Sequelize) {
-  const books = _books.initModel(sequelize);
-  const cartItems = _cartItems.initModel(sequelize);
-  const categories = _categories.initModel(sequelize);
-  const deliveries = _deliveries.initModel(sequelize);
-  const likes = _likes.initModel(sequelize);
-  const orderedBooks = _orderedBooks.initModel(sequelize);
-  const orders = _orders.initModel(sequelize);
-  const users = _users.initModel(sequelize);
+  const book = _book.initModel(sequelize);
+  const cartItem = _cartItem.initModel(sequelize);
+  const category = _category.initModel(sequelize);
+  const delivery = _delivery.initModel(sequelize);
+  const like = _like.initModel(sequelize);
+  const order = _order.initModel(sequelize);
+  const orderedBook = _orderedBook.initModel(sequelize);
+  const user = _user.initModel(sequelize);
 
-  books.belongsToMany(users, { as: 'user_id_users', through: likes, foreignKey: "book_id", otherKey: "user_id" });
-  users.belongsToMany(books, { as: 'book_id_books', through: likes, foreignKey: "user_id", otherKey: "book_id" });
-  cartItems.belongsTo(books, { as: "books", foreignKey: "book_id"});
-  books.hasMany(cartItems, { as: "cartItems", foreignKey: "book_id"});
-  likes.belongsTo(books, { as: "books", foreignKey: "book_id"});
-  books.hasMany(likes, { as: "likes", foreignKey: "book_id"});
-  orderedBooks.belongsTo(books, { as: "books", foreignKey: "book_id"});
-  books.hasMany(orderedBooks, { as: "orderedBooks", foreignKey: "book_id"});
-  books.belongsTo(categories, { as: "categories", foreignKey: "category_id"});
-  categories.hasMany(books, { as: "books", foreignKey: "category_id"});
-  orders.belongsTo(deliveries, { as: "deliveries", foreignKey: "delivery_id"});
-  deliveries.hasMany(orders, { as: "orders", foreignKey: "delivery_id"});
-  orderedBooks.belongsTo(orders, { as: "orders", foreignKey: "order_id"});
-  orders.hasMany(orderedBooks, { as: "orderedBooks", foreignKey: "order_id"});
-  cartItems.belongsTo(users, { as: "users", foreignKey: "user_id"});
-  users.hasMany(cartItems, { as: "cartItems", foreignKey: "user_id"});
-  likes.belongsTo(users, { as: "users", foreignKey: "user_id"});
-  users.hasMany(likes, { as: "likes", foreignKey: "user_id"});
-  orders.belongsTo(users, { as: "users", foreignKey: "user_id"});
-  users.hasMany(orders, { as: "orders", foreignKey: "user_id"});
+  book.belongsToMany(user, { as: 'user_id_users', through: like, foreignKey: "book_id", otherKey: "user_id" });
+  user.belongsToMany(book, { as: 'book_id_books', through: like, foreignKey: "user_id", otherKey: "book_id" });
+  cartItem.belongsTo(book, { as: "book", foreignKey: "book_id"});
+  book.hasMany(cartItem, { as: "cartItems", foreignKey: "book_id"});
+  like.belongsTo(book, { as: "book", foreignKey: "book_id"});
+  book.hasMany(like, { as: "likes", foreignKey: "book_id"});
+  orderedBook.belongsTo(book, { as: "book", foreignKey: "book_id"});
+  book.hasMany(orderedBook, { as: "orderedBooks", foreignKey: "book_id"});
+  book.belongsTo(category, { as: "category", foreignKey: "category_id"});
+  category.hasMany(book, { as: "books", foreignKey: "category_id"});
+  order.belongsTo(delivery, { as: "delivery", foreignKey: "delivery_id"});
+  delivery.hasMany(order, { as: "orders", foreignKey: "delivery_id"});
+  orderedBook.belongsTo(order, { as: "order", foreignKey: "order_id"});
+  order.hasMany(orderedBook, { as: "orderedBooks", foreignKey: "order_id"});
+  cartItem.belongsTo(user, { as: "user", foreignKey: "user_id"});
+  user.hasMany(cartItem, { as: "cartItems", foreignKey: "user_id"});
+  like.belongsTo(user, { as: "user", foreignKey: "user_id"});
+  user.hasMany(like, { as: "likes", foreignKey: "user_id"});
+  order.belongsTo(user, { as: "user", foreignKey: "user_id"});
+  user.hasMany(order, { as: "orders", foreignKey: "user_id"});
 
   return {
-    books: books,
-    cartItems: cartItems,
-    categories: categories,
-    deliveries: deliveries,
-    likes: likes,
-    orderedBooks: orderedBooks,
-    orders: orders,
-    users: users,
+    book: book,
+    cartItem: cartItem,
+    category: category,
+    delivery: delivery,
+    like: like,
+    order: order,
+    orderedBook: orderedBook,
+    user: user,
   };
 }

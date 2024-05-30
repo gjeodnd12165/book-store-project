@@ -10,8 +10,10 @@ app.listen(process.env.SERVER_PORT, () => {
 
 // pre-routing middlewares
 import { decodeToken } from "./middleware/auth.middleware";
+import { enableCors } from "./middleware/cors.middleware";
 
 app.use(decodeToken);
+app.use(enableCors);
 
 // routing middlewares
 import booksRouter from './routes/books.router';
