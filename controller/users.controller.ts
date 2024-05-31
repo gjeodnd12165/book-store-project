@@ -32,7 +32,9 @@ export async function issueUserToken(req: express.Request<{}, {}, {
 
   return res.status(StatusCodes.OK).cookie('BookShopUser', token, {
     httpOnly: true
-  }).end();
+  }).json({
+    token: token
+  });
 }
 
 export async function confirmUserPassword(req: express.Request<{}, {}, {
