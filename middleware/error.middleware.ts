@@ -9,11 +9,11 @@ const logError = (
   res: express.Response, 
   next: express.NextFunction
   ): void => {
-  console.error(`
-  === This is from logError  ===
-  ${err.stack}
-  === This was from logError ===
-  `);
+  // console.error(`
+  // === This is from logError  ===
+  // ${err.stack}
+  // === This was from logError ===
+  // `);
   next(err);
 }
 

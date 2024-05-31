@@ -15,15 +15,15 @@ export async function searchBooks(
   recentDays: string | undefined, 
   listNum: string | undefined = '20', 
   page: string | undefined = '1'
-): Promise<bookAttributes[]> {
-  if (
-    isNaN(Number(categoryId)) ||
-    isNaN(Number(recentDays)) ||
-    isNaN(Number(listNum)) ||
-    isNaN(Number(page))
-  ) {
-    throw new IdNotConvertableError('categoryId, recentDays, listNum, page should be able to be casted to a number');
-  }
+) {
+  // if (
+  //   isNaN(Number(categoryId)) ||
+  //   isNaN(Number(recentDays)) ||
+  //   isNaN(Number(listNum)) ||
+  //   isNaN(Number(page))
+  // ) {
+  //   throw new IdNotConvertableError('categoryId, recentDays, listNum, page should be able to be casted to a number');
+  // }
 
   const result = await sequelize.transaction(async (t: Transaction) => {
     let condition = {};
@@ -46,7 +46,12 @@ export async function searchBooks(
       };
     }
 
-    const book = await models.book.findAll({
+    const books = await models.book.findAll({
+      attributes: {
+        include: [
+          [sequelize.col('category.name'), 'category_name'],
+        ]
+      },
       include: [
         {
           model: models.category,
@@ -55,20 +60,25 @@ export async function searchBooks(
           as: 'category'
         }
       ],
-      attributes: {
-        include: [
-          [sequelize.col('category.name'), 'category_name']
-        ]
-      },
       where: {
         ...condition
       },
       limit: +listNum,
-      offset: (+page-1)*(+listNum),
+      offset: (+page - 1) * (+listNum),
       transaction: t,
+      subQuery: false
     });
 
-    return book;
+    const totalBooks = await models.book.count({ transaction: t });
+
+    return {
+      books: books,
+      pagination: {
+        totalBooks: totalBooks,
+        listNum: +listNum,
+        currentPage: +page,
+      }
+    };
   });
   return result;
 }
