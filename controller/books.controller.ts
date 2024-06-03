@@ -28,7 +28,7 @@ export async function getBook (
   res: express.Response
 ): Promise<express.Response<{}, Record<string, any>>> {
   const { bookId } = req.params;
-  const userId = req.token.id;
+  const userId = req.token?.id;
 
   const book = await searchBook(bookId, userId);
 

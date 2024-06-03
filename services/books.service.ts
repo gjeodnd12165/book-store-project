@@ -1,7 +1,7 @@
-import { Op, Transaction, WhereOptions } from 'sequelize';
+import { Op, Sequelize, Transaction, WhereOptions } from 'sequelize';
 import { bookAttributes, initModels } from '../models/init-models';
 import { sequelize } from '../sequelize';
-import { Literal } from 'sequelize/types/utils';
+import { Col, Literal } from 'sequelize/types/utils';
 import { IdNotConvertableError } from '../errors';
 
 const models = initModels(sequelize);
@@ -100,16 +100,25 @@ export async function searchBook(
       id: +bookId
     };
 
-    let isLiked: [Literal, string] | null;
-    if (userId) {
-      isLiked = [
-        sequelize.literal(`EXISTS (SELECT * FROM \`like\` WHERE user_id=${+userId} AND book_id=${+bookId})`),
-        'isLiked'
+    const includings: (string | [Col | Literal, string])[] = [
+      [
+        sequelize.col('category.name'), 'category_name'
+      ],
+      [
+        sequelize.literal('(SELECT COUNT(*) FROM `like` WHERE `like`.book_id = book.id)'),
+        'likes'
       ]
+    ]
+
+    if (userId) {
+      includings.push([
+        sequelize.literal(`EXISTS (SELECT * FROM \`like\` WHERE user_id=${+userId} AND book_id=${+bookId})`),
+        'liked'
+      ]);
     }
 
     const book = await models.book.findOne({
-      include: [
+      include: [  
         {
           model: models.category,
           required: false,
@@ -118,16 +127,7 @@ export async function searchBook(
         }
       ],
       attributes: {
-        include:[
-          [
-            sequelize.col('category.name'), 'category_name'
-          ],
-          [
-            sequelize.literal('(SELECT COUNT(*) FROM `like` WHERE `like`.book_id = book.id)'),
-            'like'
-          ],
-          isLiked
-        ]
+        include: includings
       },
       where: {
         ...condition

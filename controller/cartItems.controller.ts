@@ -13,7 +13,7 @@ export async function createCartItem (req: express.Request<{}, {}, {
   }, {}>, res: express.Response
 ): Promise<express.Response<{}, Record<string, any>>> {
   const { bookId, quantity } = req.body;
-  const userId = req.token.id;
+  const userId = req.token?.id;
 
   const result = await insertCartItem(bookId, quantity, userId);
 
