@@ -103,7 +103,7 @@ export async function searchBook(
     let isLiked: [Literal, string] | null;
     if (userId) {
       isLiked = [
-        sequelize.literal(`EXISTS (SELECT * FROM likes WHERE user_id=${+userId} AND book_id=${+bookId})`),
+        sequelize.literal(`EXISTS (SELECT * FROM \`like\` WHERE user_id=${+userId} AND book_id=${+bookId})`),
         'isLiked'
       ]
     }
@@ -123,8 +123,8 @@ export async function searchBook(
             sequelize.col('category.name'), 'category_name'
           ],
           [
-            sequelize.literal('(SELECT COUNT(*) FROM likes WHERE likes.book_id = book.id)'),
-            'likes'
+            sequelize.literal('(SELECT COUNT(*) FROM `like` WHERE `like`.book_id = book.id)'),
+            'like'
           ],
           isLiked
         ]
