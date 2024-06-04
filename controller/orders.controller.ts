@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes';
 
 export async function createOrder(
   req: express.Request<{}, {}, {
-    cartItemIds: string[],
+    cartItemIds: number[],
     delivery: {
       address: string,
       receiver: string,

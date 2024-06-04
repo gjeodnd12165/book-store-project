@@ -9,7 +9,7 @@ const models = initModels(sequelize);
  * @returns information about INSERT
  */
 export async function insertOrder(
-  cartItemIds: string[], 
+  cartItemIds: number[], 
   delivery: {
     address: string,
     receiver: string,
@@ -21,7 +21,6 @@ export async function insertOrder(
   deletedRows: number
 }> {
   if (
-    cartItemIds?.filter((id: string) => isNaN(Number(id))).length ||
     isNaN(Number(userId))
   ) {
     throw new IdNotConvertableError('element of bookIds, userId should be able to be casted to a number');
@@ -46,7 +45,7 @@ export async function insertOrder(
     const cartItem = await models.cartItem.findAll({
       where: {
         id: {
-          [Op.in]: cartItemIds.map((id: string) => +id)
+          [Op.in]: cartItemIds
         }
       },
       transaction: t
@@ -65,7 +64,7 @@ export async function insertOrder(
     const deleteCount = await models.cartItem.destroy({
       where: {
         id: {
-          [Op.in]: cartItemIds.map((id: string) => +id)
+          [Op.in]: cartItemIds
         }
       },
       transaction: t

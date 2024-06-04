@@ -70,15 +70,23 @@ export async function searchCartItems (
         {
           model: models.book,
           required: false,
-          attributes: ['title', 'summary', 'price'],
-          as: 'book'
+          attributes: [],
+          as: 'book',
         }
       ],
+      attributes: {
+        include: [
+          [sequelize.col('book.title'), 'title'],
+          [sequelize.col('book.summary'), 'summary'],
+          [sequelize.col('book.price'), 'price'],
+        ]
+      },
       where: {
         ...condition
       },
       transaction: t
     });
+    console.log('cartItem', cartItem);
     
     return cartItem;
   });
