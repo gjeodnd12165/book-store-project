@@ -1,26 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { Sequelize } from 'sequelize-typescript';
+import { Category } from './category.entity';
+import { QueryCategoryResponseDto } from './dto/query-category.dto';
+import { Transaction } from 'sequelize';
+import { InjectModel } from '@nestjs/sequelize';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
-  }
+  constructor(
+    @Inject()
+    private readonly sequelize: Sequelize,
+    @InjectModel(Category)
+    private readonly categoryModel: typeof Category,
+  ) {}
 
-  findAll() {
-    return `This action returns all category`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
-  }
-
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async findAll(): Promise<QueryCategoryResponseDto[]> {
+    return this.sequelize.transaction(async (t: Transaction) => {
+      return await this.categoryModel.findAll<Category>({
+        transaction: t,
+      });
+    });
   }
 }

@@ -1,34 +1,7 @@
-import {
-  Model,
-  Table,
-  Column,
-  DataType,
-  Index,
-  Sequelize,
-  ForeignKey,
-} from 'sequelize-typescript';
-
-export interface bookAttributes {
-  id?: number;
-  title: string;
-  img?: number;
-  categoryId: number;
-  form: string;
-  author: string;
-  isbn: string;
-  pages: string;
-  summary?: string;
-  detail?: string;
-  contents?: string;
-  price: number;
-  pubDate: string;
-}
+import { Model, Table, Column, DataType, Index } from 'sequelize-typescript';
 
 @Table({ tableName: 'book', timestamps: false })
-export class book
-  extends Model<bookAttributes, bookAttributes>
-  implements bookAttributes
-{
+export class Book extends Model<Book> {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
   @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
   id?: number;

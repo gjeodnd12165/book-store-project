@@ -1,40 +1,13 @@
-import {
-  Model,
-  Table,
-  Column,
-  DataType,
-  Index,
-  Sequelize,
-  ForeignKey,
-} from 'sequelize-typescript';
-
-export interface BookAttributes {
-  id?: number;
-  title: string;
-  img?: number;
-  categoryId: number;
-  form: string;
-  author: string;
-  isbn: string;
-  pages: string;
-  summary?: string;
-  detail?: string;
-  contents?: string;
-  price: number;
-  pubDate: string;
-}
+import { Model, Table, Column, DataType, Index } from 'sequelize-typescript';
 
 @Table({ tableName: 'book', timestamps: false })
-export class Book
-  extends Model<BookAttributes, BookAttributes>
-  implements BookAttributes
-{
+export class Book extends Model<Book> {
   @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
   @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
-  id?: number;
+  id: number;
 
   @Column({ type: DataType.STRING(45) })
-  title!: string;
+  title: string;
 
   @Column({ allowNull: true, type: DataType.INTEGER })
   img?: number;
@@ -46,32 +19,32 @@ export class Book
     order: 'ASC',
     unique: false,
   })
-  categoryId!: number;
+  categoryId: number;
 
   @Column({ type: DataType.STRING(45) })
-  form!: string;
+  form: string;
 
   @Column({ type: DataType.STRING(45) })
-  author!: string;
+  author: string;
 
   @Column({ type: DataType.STRING(45) })
-  isbn!: string;
+  isbn: string;
 
   @Column({ type: DataType.STRING(45) })
-  pages!: string;
+  pages: string;
 
   @Column({ allowNull: true, type: DataType.STRING(500) })
-  summary?: string;
+  summary: string;
 
   @Column({ allowNull: true, type: DataType.STRING })
-  detail?: string;
+  detail: string;
 
   @Column({ allowNull: true, type: DataType.STRING(45) })
-  contents?: string;
+  contents: string;
 
   @Column({ type: DataType.INTEGER })
-  price!: number;
+  price: number;
 
   @Column({ field: 'pub_date', type: DataType.DATEONLY })
-  pubDate!: string;
+  pubDate: string;
 }

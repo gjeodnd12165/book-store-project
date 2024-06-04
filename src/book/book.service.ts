@@ -1,104 +1,59 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { Inject, Injectable } from '@nestjs/common';
 import { Sequelize } from 'sequelize-typescript';
-import { Book } from './book.model';
 import { InjectModel } from '@nestjs/sequelize';
-import { Op } from 'sequelize';
-import { GetBooksParamDto } from './dto/get-books.dto.';
+import { Op, WhereOptions } from 'sequelize';
+import { QueryBooksDto } from './dto/query-books.dto';
+import { QueryBookDto } from './dto/query-book.dto';
+import { Literal } from 'sequelize/types/utils';
+import { Book } from './book.entity';
+import { Category } from 'src/category/entities/category.entity';
+import { SequelizeBookRepository } from './book.repository';
 
 @Injectable()
 export class BookService {
   constructor(
-    @InjectModel(Book)
-    private readonly bookModel: typeof Book,
-    private readonly sequelize: Sequelize,
+    @Inject()
+    private readonly bookRepository: SequelizeBookRepository,
   ) {}
 
-  create(createBookDto: CreateBookDto) {
-    return 'This action adds a new book';
+  async findAll(queryBooksDto: QueryBooksDto): Promise<Book[] | null> {
+    return this.bookRepository.findAll(queryBooksDto);
   }
 
-  async findAll(getBooksParamDto: GetBooksParamDto): Promise<Book[] | null> {
-    const {  } = getBooksParamDto
-    
-    const result = await this.sequelize.transaction(async (t) => {
-      let condition = {};
-      
-      if (categoryId > 0) {
-        condition = {
-          ...condition,
-          category_id: categoryId
-        };
+  async findOne(queryBookDto: QueryBookDto): Promise<Book>{
+    const { bookId, userId } = queryBookDto;
+
+    return await this.sequelize.transaction(async (t) => {
+      let condition: WhereOptions<Book> = {
+        id: bookId,
+      };
+
+      const includings: (string | [Col | Literal, string])[] = [
+        [this.sequelize.col('category.name'), 'category_name'],
+        [
+          this.sequelize.literal(
+            '(SELECT COUNT(*) FROM `like` WHERE `like`.book_id = book.id)',
+          ),
+          'likes',
+        ],
+      ];
+
+      if (userId) {
+        includings.push([
+          this.sequelize.literal(
+            `EXISTS (SELECT * FROM \`like\` WHERE user_id=${userId} AND book_id=${bookId})`,
+          ),
+          'liked',
+        ]);
       }
 
-      if (recentDays > 0) {
-        condition = {
-          ...condition,
-          pub_date: {
-            [Op.between]: [
-              new Date(Date.now() - recentDays * 24 * 60 * 60 * 1000),
-              Date.now()
-            ]
-          }
-        };
-      }
-  
-      const books = await this.bookModel.findAll({
-        attributes: {
-          include: [
-            [this.sequelize.col('category.name'), 'category_name'],
-          ]
-        },
+      const book: Book = await this.bookModel.findOne({
         include: [
           {
-            model: model.category,
-            required: false,
-            attributes: [],
-            as: 'category'
+            model: 
           }
-        ],
-        where: {
-          ...condition
-        },
-        limit: +listNum,
-        offset: (page - 1) * (listNum),
-        transaction: t,
-        subQuery: false
-      });
-  
-      const totalBooks = await models.book.count({ transaction: t });
-  
-      return {
-        books: books,
-        pagination: {
-          totalBooks: totalBooks,
-          listNum: listNum,
-          currentPage: page,
-        }
-      };
+        ]
+      })
     });
-    return result;
-  }
-
-  async findOne(id: number): Promise<Book | null>{
-    return await this.sequelize.transaction(async (t) => {
-      const transactionHost = { transaction: t };
-
-      return await this.bookModel.findOne({
-        where: {
-          id: id,
-        },
-        ...transactionHost,
-      });
-    });
-  }
-
-  update(id: number, updateBookDto: UpdateBookDto) {
-    return `This action updates a #${id} book`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} book`;
   }
 }
