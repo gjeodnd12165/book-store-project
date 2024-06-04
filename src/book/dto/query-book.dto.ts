@@ -1,7 +1,7 @@
 import { IsNumberString, IsOptional } from 'class-validator';
 import { TransformToNumber } from 'src/transformer/transformToNumber';
 
-export class QueryBookDto {
+export class QueryBookParamsDto {
   @IsNumberString()
   @TransformToNumber()
   bookId: number;
@@ -10,4 +10,9 @@ export class QueryBookDto {
   @IsNumberString()
   @TransformToNumber()
   userId: number;
+}
+
+export class QueryBookResponseDto {
+  @IsNumberString()
+  @Transform
 }
