@@ -1,17 +1,15 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
-  Delete,
   Query,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
 import { Book } from './book.model';
+import { plainToInstance } from 'class-transformer';
+import { GetBooksQueryDto } from './dto/get-books-query.dto';
 
 @Controller('book')
 export class BookController {
@@ -23,18 +21,20 @@ export class BookController {
   // }
 
   @Get()
-  findAll(@Query(): {
-    categoryId: string,
-    recentDays: string,
-    listNum: string,
-    page: string
-  }): Book[] {
-    return await this.bookService.findAll();
+  async findAll(
+    @Query() query: GetBooksQueryDto
+  ): Promise<Book[]> {
+    const dto: GetBooksQueryDto = plainToInstance(GetBooksQueryDto, query)
+
+    return await this.bookService.findAll(dto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.bookService.findOne(+id);
+  findOne(
+    @Param('bookId', new DefaultValuePipe(), new ParseIntPipe()) userId: number,
+    @Param('userId') 
+  ) {
+    return this.bookService.findOne(userId);
   }
 
   // @Patch(':id')
