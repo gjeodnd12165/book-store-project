@@ -93,10 +93,11 @@ export async function searchOrders(
   const result = await sequelize.transaction(async (t: Transaction) => {
     const order = await models.orderedBook.findAll({
       attributes: [
-        ['order_id', 'orderId'],
+        ['order_id', 'id'],
         [sequelize.fn('COUNT', sequelize.col('*')), 'totalTypes'],
-        [sequelize.fn('SUM', sequelize.literal('book.price*orderedBook.quantity')), 'totalPrice'],
-        [sequelize.fn('SUM', sequelize.col('quantity')), 'totalQuantity']
+        [sequelize.fn('CONVERT', sequelize.fn('SUM', sequelize.literal('book.price*orderedBook.quantity')), sequelize.literal('SIGNED')), 'totalPrice'],
+        [sequelize.fn('CONVERT', sequelize.fn('SUM', sequelize.col('quantity')), sequelize.literal('SIGNED')), 'totalQuantity'],
+        [sequelize.col('book.title'), 'title'],
       ],
       include: [
         {
@@ -115,7 +116,7 @@ export async function searchOrders(
         {
           model: models.book,
           as: 'book',
-          attributes: ['title']
+          attributes: []
         }
       ],
       group: ['order_id'],
