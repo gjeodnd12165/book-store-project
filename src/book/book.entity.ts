@@ -1,50 +1,58 @@
-import { Model, Table, Column, DataType, Index } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Index,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { Category } from 'src/category/category.entity';
 
-@Table({ tableName: 'book', timestamps: false })
+@Table({ tableName: 'book', createdAt: false, updatedAt: false })
 export class Book extends Model<Book> {
-  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
-  @Index({ name: 'PRIMARY', using: 'BTREE', order: 'ASC', unique: true })
-  id: number;
+  @Column({ primaryKey: true, type: DataType.INTEGER })
+  @Index({ using: 'BTREE', order: 'ASC', unique: true })
+  readonly id: number;
 
   @Column({ type: DataType.STRING(45) })
-  title: string;
-
-  @Column({ allowNull: true, type: DataType.INTEGER })
-  img?: number;
-
-  @Column({ field: 'category_id', type: DataType.INTEGER })
-  @Index({
-    name: 'category_id_idx',
-    using: 'BTREE',
-    order: 'ASC',
-    unique: false,
-  })
-  categoryId: number;
-
-  @Column({ type: DataType.STRING(45) })
-  form: string;
-
-  @Column({ type: DataType.STRING(45) })
-  author: string;
-
-  @Column({ type: DataType.STRING(45) })
-  isbn: string;
-
-  @Column({ type: DataType.STRING(45) })
-  pages: string;
-
-  @Column({ allowNull: true, type: DataType.STRING(500) })
-  summary: string;
-
-  @Column({ allowNull: true, type: DataType.STRING })
-  detail: string;
-
-  @Column({ allowNull: true, type: DataType.STRING(45) })
-  contents: string;
+  readonly title: string;
 
   @Column({ type: DataType.INTEGER })
-  price: number;
+  readonly img: number;
 
-  @Column({ field: 'pub_date', type: DataType.DATEONLY })
-  pubDate: string;
+  @Column({ type: DataType.INTEGER })
+  @Index({ using: 'BTREE', order: 'ASC', unique: true })
+  @ForeignKey(() => Category)
+  readonly category_id: number;
+
+  @Column({ type: DataType.STRING })
+  readonly form: string;
+
+  @Column({ type: DataType.STRING(45) })
+  readonly author: string;
+
+  @Column({ type: DataType.INTEGER })
+  readonly isbn: number;
+
+  @Column({ type: DataType.INTEGER })
+  readonly pages: number;
+
+  @Column({ type: DataType.STRING(500) })
+  readonly summary: string;
+
+  @Column({ type: DataType.STRING })
+  readonly detail: string;
+
+  @Column({ type: DataType.STRING(45) })
+  readonly contents: string;
+
+  @Column({ type: DataType.INTEGER })
+  readonly price: number;
+
+  @Column({ type: DataType.DATE })
+  readonly pub_date: Date;
+
+  @BelongsTo(() => Category)
+  readonly category: Category;
 }

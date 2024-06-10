@@ -1,59 +1,82 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import {
+  FetchBookRequestParamDto,
+  FetchBookResponseDto,
+  FetchBooksRequestQueryDto,
+  FetchBooksResponseDto,
+} from './dto/fetch-book.dto';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { InjectModel } from '@nestjs/sequelize';
-import { Op, WhereOptions } from 'sequelize';
-import { QueryBooksDto } from './dto/query-books.dto';
-import { QueryBookDto } from './dto/query-book.dto';
-import { Literal } from 'sequelize/types/utils';
 import { Book } from './book.entity';
-import { Category } from 'src/category/entities/category.entity';
-import { SequelizeBookRepository } from './book.repository';
+import { Op, Transaction } from 'sequelize';
+import { Category } from 'src/category/category.entity';
 
 @Injectable()
 export class BookService {
   constructor(
-    @Inject()
-    private readonly bookRepository: SequelizeBookRepository,
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+    @InjectModel(Book)
+    private readonly BookModel: typeof Book,
+    @InjectModel(Category)
+    private readonly CategoryModel: typeof Category,
   ) {}
 
-  async findAll(queryBooksDto: QueryBooksDto): Promise<Book[] | null> {
-    return this.bookRepository.findAll(queryBooksDto);
-  }
+  findAll(
+    queryBooksRequestQueryDto: FetchBooksRequestQueryDto,
+  ): Promise<FetchBooksResponseDto[]> {
+    const { categoryId, recentDays, listNum, page } = queryBooksRequestQueryDto;
 
-  async findOne(queryBookDto: QueryBookDto): Promise<Book>{
-    const { bookId, userId } = queryBookDto;
+    return this.sequelize.transaction(async (t: Transaction) => {
+      let condition = {};
 
-    return await this.sequelize.transaction(async (t) => {
-      let condition: WhereOptions<Book> = {
-        id: bookId,
-      };
-
-      const includings: (string | [Col | Literal, string])[] = [
-        [this.sequelize.col('category.name'), 'category_name'],
-        [
-          this.sequelize.literal(
-            '(SELECT COUNT(*) FROM `like` WHERE `like`.book_id = book.id)',
-          ),
-          'likes',
-        ],
-      ];
-
-      if (userId) {
-        includings.push([
-          this.sequelize.literal(
-            `EXISTS (SELECT * FROM \`like\` WHERE user_id=${userId} AND book_id=${bookId})`,
-          ),
-          'liked',
-        ]);
+      if (categoryId) {
+        condition = {
+          ...condition,
+          category_id: +categoryId,
+        };
+      }
+      if (recentDays) {
+        condition = {
+          ...condition,
+          pub_date: {
+            [Op.between]: [
+              new Date(Date.now() - +recentDays * 24 * 60 * 60 * 1000),
+              Date.now(),
+            ],
+          },
+        };
       }
 
-      const book: Book = await this.bookModel.findOne({
+      const books: Book[] = await this.BookModel.findAll({
+        attributes: {
+          include: [[this.sequelize.col('category.name'), 'category_name']],
+        },
         include: [
           {
-            model: 
-          }
-        ]
-      })
+            model: this.CategoryModel,
+            required: false,
+            attributes: [],
+            as: 'category',
+          },
+        ],
+        where: {
+          ...condition,
+        },
+        limit: +listNum,
+        offset: (+page - 1) * +listNum,
+        transaction: t,
+        subQuery: false,
+      });
+
+      return books.map((book) => new FetchBooksResponseDto(book));
     });
+  }
+
+  findOne(
+    queryBookRequestParamDto: FetchBookRequestParamDto,
+  ): Promise<FetchBookResponseDto> {
+    console.log(queryBookRequestParamDto);
+    return;
   }
 }
