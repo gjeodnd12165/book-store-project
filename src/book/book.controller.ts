@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, Param, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Query } from '@nestjs/common';
 import { BookService } from './book.service';
 import {
+  FetchBookRequestBodyDto,
   FetchBookRequestParamDto,
   FetchBookResponseDto,
   FetchBooksRequestQueryDto,
@@ -22,8 +23,9 @@ export class BookController {
   @Get(':bookId')
   @HttpCode(200)
   findOne(
-    @Param() queryBookRequestParamDto: FetchBookRequestParamDto,
+    @Param() param: FetchBookRequestParamDto,
+    @Body() body: FetchBookRequestBodyDto,
   ): Promise<FetchBookResponseDto> {
-    return this.bookService.findOne(queryBookRequestParamDto);
+    return this.bookService.findOne(param, body);
   }
 }

@@ -1,4 +1,3 @@
-import { Transform } from 'class-transformer';
 import {
   IsBoolean,
   IsDate,
@@ -7,25 +6,26 @@ import {
   IsString,
 } from 'class-validator';
 import { Book } from '../book.entity';
+import { TransformToNumber } from 'src/transformer/transformToNumber';
 
 export class FetchBooksRequestQueryDto {
   @IsOptional()
-  @Transform(({ value }) => Number(value))
+  @TransformToNumber()
   @IsNumber()
   readonly categoryId?: number;
 
   @IsOptional()
-  @Transform(({ value }) => Number(value))
+  @TransformToNumber()
   @IsNumber()
   readonly recentDays?: number;
 
   @IsOptional()
-  @Transform(({ value }) => Number(value))
+  @TransformToNumber()
   @IsNumber()
   readonly listNum: number = 8;
 
   @IsOptional()
-  @Transform(({ value }) => Number(value))
+  @TransformToNumber()
   @IsNumber()
   readonly page: number = 1;
 }
@@ -87,27 +87,36 @@ export class FetchBooksResponseDto {
   }
 }
 
+export class FetchBookRequestBodyDto {
+  @TransformToNumber()
+  @IsNumber()
+  readonly userId: number;
+}
+
 export class FetchBookRequestParamDto {
-  @Transform(({ value }) => Number(value))
+  @TransformToNumber()
   @IsNumber()
   readonly bookId: number;
 }
 
 export class FetchBookResponseDto extends FetchBooksResponseDto {
+  @IsOptional()
   @IsString()
-  readonly category_name: string;
+  readonly category_name?: string;
 
+  @IsOptional()
   @IsNumber()
-  readonly likes: number;
+  readonly likes?: number;
 
+  @IsOptional()
   @IsBoolean()
-  readonly liked: boolean;
+  readonly liked?: boolean;
 
   constructor(
     book: Book,
-    category_name: string,
-    likes: number,
-    liked: boolean,
+    category_name?: string,
+    likes?: number,
+    liked?: boolean,
   ) {
     super(book);
     this.category_name = category_name;
