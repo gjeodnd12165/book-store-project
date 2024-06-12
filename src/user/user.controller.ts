@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  UseGuards,
+  Get,
+  Request,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
+import { AuthService } from './auth/auth.service';
+import { SignInRequestBodyDto, SignInResponseDto } from './auth/dto/signIn.dto';
+import { AuthGuard } from './auth/auth.guard';
+import {
+  FetchProfileRequestDto,
+  FetchProfileResponseDto,
+} from './auth/dto/fetch-profile.dto';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    // @Inject()
+    // private readonly userService: UserService,
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
+  ) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  @Post('signin')
+  @HttpCode(200)
+  signIn(@Body() body: SignInRequestBodyDto): Promise<SignInResponseDto> {
+    return this.authService.signIn(body);
   }
 
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  getProfile(@Request() req: FetchProfileRequestDto): FetchProfileResponseDto {
+    return req.user;
   }
 }

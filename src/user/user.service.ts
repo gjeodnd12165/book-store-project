@@ -1,26 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Sequelize } from 'sequelize-typescript';
+import { User } from './user.entity';
+import { InjectConnection, InjectModel } from '@nestjs/sequelize';
+import { Transaction } from 'sequelize';
+import { FetchUserByEmailRequestParamDto } from './dto/fetch-user.dto';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+  constructor(
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
+    @InjectModel(User)
+    private readonly userModel: typeof User,
+  ) {}
 
-  findAll() {
-    return `This action returns all user`;
-  }
+  findOneByEmail(
+    fetchByEmailUserRequestParamDto: FetchUserByEmailRequestParamDto,
+  ): Promise<User> {
+    const { email } = fetchByEmailUserRequestParamDto;
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+    return this.sequelize.transaction(async (t: Transaction) => {
+      const user = this.userModel.findOne({
+        where: {
+          email: email,
+        },
+        transaction: t,
+      });
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+      return user;
+    });
   }
 }

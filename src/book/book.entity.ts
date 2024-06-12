@@ -9,9 +9,9 @@ import {
 } from 'sequelize-typescript';
 import { Category } from 'src/category/category.entity';
 
-@Table({ tableName: 'book', createdAt: false, updatedAt: false })
+@Table({ tableName: 'book', timestamps: false })
 export class Book extends Model<Book> {
-  @Column({ primaryKey: true, type: DataType.INTEGER })
+  @Column({ primaryKey: true, autoIncrement: true, type: DataType.INTEGER })
   @Index({ using: 'BTREE', order: 'ASC', unique: true })
   readonly id: number;
 

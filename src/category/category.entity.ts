@@ -8,7 +8,7 @@ import {
 } from 'sequelize-typescript';
 import { Book } from 'src/book/book.entity';
 
-@Table({ tableName: 'category', createdAt: false, updatedAt: false })
+@Table({ tableName: 'category', timestamps: false })
 export class Category extends Model<Category> {
   @Column({ primaryKey: true, type: DataType.INTEGER })
   @Index({ using: 'BTREE', order: 'ASC', unique: true })

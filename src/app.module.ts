@@ -1,15 +1,9 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { CategoryModule } from './category/category.module';
 import { BookModule } from './book/book.module';
-import { LikeModule } from './like/like.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 
@@ -28,7 +22,7 @@ import { UserModule } from './user/user.module';
     ConfigModule.forRoot(),
     CategoryModule,
     BookModule,
-    LikeModule,
+    // LikeModule,
     UserModule,
   ],
   controllers: [AppController],

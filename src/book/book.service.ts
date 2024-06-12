@@ -13,6 +13,7 @@ import { Op, Transaction, WhereOptions } from 'sequelize';
 import { Category } from 'src/category/category.entity';
 import { Col, Literal } from 'sequelize/types/utils';
 import sequelize from 'sequelize';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BookService {
@@ -20,9 +21,9 @@ export class BookService {
     @InjectConnection()
     private readonly sequelize: Sequelize,
     @InjectModel(Book)
-    private readonly BookModel: typeof Book,
+    private readonly bookModel: typeof Book,
     @InjectModel(Category)
-    private readonly CategoryModel: typeof Category,
+    private readonly categoryModel: typeof Category,
   ) {}
 
   findAll(
@@ -51,13 +52,13 @@ export class BookService {
         };
       }
 
-      const books: Book[] = await this.BookModel.findAll({
+      const books: Book[] = await this.bookModel.findAll({
         attributes: {
           include: [[this.sequelize.col('category.name'), 'category_name']],
         },
         include: [
           {
-            model: this.CategoryModel,
+            model: this.categoryModel,
             required: false,
             attributes: [],
             as: 'category',
@@ -72,7 +73,7 @@ export class BookService {
         subQuery: false,
       });
 
-      return books.map((book) => new FetchBooksResponseDto(book));
+      return books.map((book) => plainToInstance(FetchBookResponseDto, book));
     });
   }
 
@@ -107,10 +108,10 @@ export class BookService {
         ]);
       }
 
-      const book = await this.BookModel.findOne({
+      const book = await this.bookModel.findOne({
         include: [
           {
-            model: this.CategoryModel,
+            model: this.categoryModel,
             required: false,
             attributes: [],
             as: 'category',
@@ -125,7 +126,7 @@ export class BookService {
         transaction: t,
       });
 
-      return new FetchBookResponseDto(book);
+      return plainToInstance(FetchBookResponseDto, book);
     });
   }
 }

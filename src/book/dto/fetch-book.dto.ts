@@ -5,8 +5,8 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { Book } from '../book.entity';
 import { TransformToNumber } from 'src/transformer/transformToNumber';
+import { Transform } from 'class-transformer';
 
 export class FetchBooksRequestQueryDto {
   @IsOptional()
@@ -49,6 +49,7 @@ export class FetchBooksResponseDto {
   @IsString()
   readonly author: string;
 
+  @Transform(({ value }) => Number(value))
   @IsString()
   readonly isbn: string;
 
@@ -69,22 +70,6 @@ export class FetchBooksResponseDto {
 
   @IsDate()
   readonly pub_date: Date;
-
-  constructor(book: Book) {
-    this.id = book.id;
-    this.title = book.title;
-    this.img = book.img;
-    this.category_id = book.category_id;
-    this.form = book.form;
-    this.author = book.author;
-    this.isbn = String(book.isbn);
-    this.pages = book.pages;
-    this.summary = book.summary;
-    this.detail = book.detail;
-    this.contents = book.contents;
-    this.price = book.price;
-    this.pub_date = book.pub_date;
-  }
 }
 
 export class FetchBookRequestBodyDto {
@@ -111,16 +96,4 @@ export class FetchBookResponseDto extends FetchBooksResponseDto {
   @IsOptional()
   @IsBoolean()
   readonly liked?: boolean;
-
-  constructor(
-    book: Book,
-    category_name?: string,
-    likes?: number,
-    liked?: boolean,
-  ) {
-    super(book);
-    this.category_name = category_name;
-    this.likes = likes;
-    this.liked = liked;
-  }
 }
