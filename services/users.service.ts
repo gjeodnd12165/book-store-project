@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize";
-import { sequelize } from "../sequelize";
+import { sequelize } from "../db/sequelize";
 import { initModels, userAttributes, userCreationAttributes } from "../models/init-models";
 
 import * as jwt from 'jsonwebtoken';

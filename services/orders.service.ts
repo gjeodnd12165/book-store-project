@@ -1,6 +1,6 @@
 import { Op, Transaction } from 'sequelize';
 import { cartItem, initModels, orderedBookAttributes, orderAttributes } from '../models/init-models';
-import { sequelize } from '../sequelize';
+import { sequelize } from '../db/sequelize';
 import { IdNotConvertableError } from '../errors';
 
 const models = initModels(sequelize);

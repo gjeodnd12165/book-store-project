@@ -13,6 +13,9 @@ export const decodeToken = (req: express.Request, res: express.Response, next: e
     decodedToken = jwt.verify(recievedToken, process.env.ACCESS_TOKEN_KEY) as DecodedToken;
   }
   req.token = decodedToken;
+  console.log('header', req.headers);
+  console.log('authorization', req.header("Authorization"))
+  console.log('decodedToken', decodedToken);
 
   next();
 }

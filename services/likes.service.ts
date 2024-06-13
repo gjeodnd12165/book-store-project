@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize";
-import { sequelize } from "../sequelize";
+import { sequelize } from "../db/sequelize";
 import { initModels, likeCreationAttributes } from "../models/init-models";
 import { IdNotConvertableError } from "../errors";
 

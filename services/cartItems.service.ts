@@ -1,6 +1,6 @@
 import { Op, Transaction, WhereOptions } from 'sequelize';
 import { cartItemAttributes, cartItemCreationAttributes, initModels } from '../models/init-models';
-import { sequelize } from '../sequelize';
+import { sequelize } from '../db/sequelize';
 import { IdNotConvertableError } from '../errors';
 
 const models = initModels(sequelize);
@@ -14,6 +14,7 @@ export async function insertCartItem (
   quantity: string, 
   userId: string
 ): Promise<cartItemCreationAttributes> {
+  console.log(bookId, quantity, userId);
   if (
     isNaN(Number(bookId)) ||
     isNaN(Number(quantity)) ||

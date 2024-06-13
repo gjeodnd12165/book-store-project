@@ -1,5 +1,5 @@
 import { Transaction } from "sequelize";
-import { sequelize } from "../sequelize";
+import { sequelize } from "../db/sequelize";
 import { categoryAttributes, initModels } from "../models/init-models";
 
 const models = initModels(sequelize);

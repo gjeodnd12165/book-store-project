@@ -1,6 +1,6 @@
 import { Op, Sequelize, Transaction, WhereOptions } from 'sequelize';
 import { bookAttributes, initModels } from '../models/init-models';
-import { sequelize } from '../sequelize';
+import { sequelize } from '../db/sequelize';
 import { Col, Literal } from 'sequelize/types/utils';
 import { IdNotConvertableError } from '../errors';
 
