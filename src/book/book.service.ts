@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import {
   FetchBookRequestBodyDto,
   FetchBookRequestParamDto,
-  FetchBookResponseDto,
+  FetchDetailedBookResponseDto,
   FetchBooksRequestQueryDto,
-  FetchBooksResponseDto,
+  FetchBookResponseDto,
 } from './dto/fetch-book.dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -28,7 +28,7 @@ export class BookService {
 
   findAll(
     queryBooksRequestQueryDto: FetchBooksRequestQueryDto,
-  ): Promise<FetchBooksResponseDto[]> {
+  ): Promise<FetchDetailedBookResponseDto[]> {
     const { categoryId, recentDays, listNum, page } = queryBooksRequestQueryDto;
 
     return this.sequelize.transaction(async (t: Transaction) => {
@@ -73,14 +73,23 @@ export class BookService {
         subQuery: false,
       });
 
-      return books.map((book) => plainToInstance(FetchBookResponseDto, book));
+      console.log(books);
+      console.log('=======================');
+
+      const transformedBooks = plainToInstance(FetchBookResponseDto, books, {
+        excludeExtraneousValues: true,
+      });
+
+      console.log(transformedBooks);
+
+      return transformedBooks;
     });
   }
 
   findOne(
     fetchBookRequestParamDto: FetchBookRequestParamDto,
     fetchBookRequestBodyDto: FetchBookRequestBodyDto,
-  ): Promise<FetchBookResponseDto> {
+  ): Promise<FetchDetailedBookResponseDto> {
     return this.sequelize.transaction(async (t: Transaction) => {
       const { bookId } = fetchBookRequestParamDto;
       const { userId } = fetchBookRequestBodyDto;
@@ -126,7 +135,7 @@ export class BookService {
         transaction: t,
       });
 
-      return plainToInstance(FetchBookResponseDto, book);
+      return plainToInstance(FetchDetailedBookResponseDto, book);
     });
   }
 }

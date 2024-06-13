@@ -30,7 +30,7 @@ export class FetchBooksRequestQueryDto {
   readonly page: number = 1;
 }
 
-export class FetchBooksResponseDto {
+export class FetchBookResponseDto {
   @IsNumber()
   readonly id: number;
 
@@ -84,7 +84,7 @@ export class FetchBookRequestParamDto {
   readonly bookId: number;
 }
 
-export class FetchBookResponseDto extends FetchBooksResponseDto {
+export class FetchDetailedBookResponseDto extends FetchBookResponseDto {
   @IsOptional()
   @IsString()
   readonly category_name?: string;

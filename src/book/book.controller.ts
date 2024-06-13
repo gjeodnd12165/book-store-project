@@ -3,9 +3,8 @@ import { BookService } from './book.service';
 import {
   FetchBookRequestBodyDto,
   FetchBookRequestParamDto,
-  FetchBookResponseDto,
+  FetchDetailedBookResponseDto,
   FetchBooksRequestQueryDto,
-  FetchBooksResponseDto,
 } from './dto/fetch-book.dto';
 
 @Controller('books')
@@ -16,7 +15,7 @@ export class BookController {
   @HttpCode(200)
   findAll(
     @Query() query: FetchBooksRequestQueryDto,
-  ): Promise<FetchBooksResponseDto[]> {
+  ): Promise<FetchDetailedBookResponseDto[]> {
     return this.bookService.findAll(query);
   }
 
@@ -25,7 +24,7 @@ export class BookController {
   findOne(
     @Param() param: FetchBookRequestParamDto,
     @Body() body: FetchBookRequestBodyDto,
-  ): Promise<FetchBookResponseDto> {
+  ): Promise<FetchDetailedBookResponseDto> {
     return this.bookService.findOne(param, body);
   }
 }
