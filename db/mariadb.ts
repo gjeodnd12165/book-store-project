@@ -1,9 +1,11 @@
 // Get the client
-const mysql = require('mysql2');
+import mysql from 'mysql2';
+import { configDotenv } from "dotenv";
+configDotenv();
 
 // Create the connection to database
 const pool = mysql.createPool({
-  host: '127.0.0.1',
+  host: process.env.DB_HOST,
   user: 'root',
   password: 'root',
   timezone: 'Asia/Seoul',
