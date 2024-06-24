@@ -27,10 +27,11 @@ export class BookService {
   ) {}
 
   findAll(
-    queryBooksRequestQueryDto: FetchBooksRequestQueryDto,
+    categoryId: number,
+    recentDays: number,
+    listNum: number,
+    page: number,
   ): Promise<FetchDetailedBookResponseDto[]> {
-    const { categoryId, recentDays, listNum, page } = queryBooksRequestQueryDto;
-
     return this.sequelize.transaction(async (t: Transaction) => {
       let condition = {};
 
@@ -87,13 +88,10 @@ export class BookService {
   }
 
   findOne(
-    fetchBookRequestParamDto: FetchBookRequestParamDto,
-    fetchBookRequestBodyDto: FetchBookRequestBodyDto,
+    bookId: number,
+    userId: number,
   ): Promise<FetchDetailedBookResponseDto> {
     return this.sequelize.transaction(async (t: Transaction) => {
-      const { bookId } = fetchBookRequestParamDto;
-      const { userId } = fetchBookRequestBodyDto;
-
       const condition: WhereOptions<Book> = {
         id: bookId,
       };

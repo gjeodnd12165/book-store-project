@@ -3,11 +3,13 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Index,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { Category } from 'src/category/category.entity';
+import { Like } from 'src/like/like.entity';
 
 @Table({ tableName: 'book', timestamps: false })
 export class Book extends Model<Book> {

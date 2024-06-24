@@ -16,7 +16,9 @@ export class BookController {
   findAll(
     @Query() query: FetchBooksRequestQueryDto,
   ): Promise<FetchDetailedBookResponseDto[]> {
-    return this.bookService.findAll(query);
+    const { categoryId, recentDays, listNum, page } = query;
+
+    return this.bookService.findAll(categoryId, recentDays, listNum, page);
   }
 
   @Get(':bookId')
@@ -25,6 +27,9 @@ export class BookController {
     @Param() param: FetchBookRequestParamDto,
     @Body() body: FetchBookRequestBodyDto,
   ): Promise<FetchDetailedBookResponseDto> {
-    return this.bookService.findOne(param, body);
+    const { bookId } = param;
+    const { userId } = body;
+
+    return this.bookService.findOne(bookId, userId);
   }
 }
