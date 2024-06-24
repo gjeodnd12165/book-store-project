@@ -9,8 +9,16 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
-import { CreateLikeRequestBodyDto, CreateLikeRequestParamDto, CreateLikeResponseDto } from './dto/create-like.dto';
-import { DeleteLikeRequestBodyDto, DeleteLikeRequestParamDto, DeleteLikeResponseDto } from './dto/delete-like.dto';
+import {
+  CreateLikeRequestBodyDto,
+  CreateLikeRequestParamDto,
+  CreateLikeResponseDto,
+} from './dto/create-like.dto';
+import {
+  DeleteLikeRequestBodyDto,
+  DeleteLikeRequestParamDto,
+  DeleteLikeResponseDto,
+} from './dto/delete-like.dto';
 
 @Controller('like')
 export class LikeController {

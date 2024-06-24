@@ -23,24 +23,15 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  signUp(
-    email: string,
-    password: string,
-    username: string,
-  ): Promise<User> {
+  signUp(email: string, password: string, username: string): Promise<User> {
     const salt: string = crypto.randomBytes(10).toString('base64');
     const hashedPassword: string = this.getHashedPassword(password, salt);
-    
+
     return this.userService.create(email, username, hashedPassword, salt);
   }
 
-  async signIn(
-    email: string,
-    password: string,
-  ): Promise<SignInResponseDto> {
-    const user = await this.userService.findOneByEmail({
-      email,
-    });
+  async signIn(email: string, password: string): Promise<SignInResponseDto> {
+    const user = await this.userService.findOneByEmail(email);
 
     const hashedPassword = this.getHashedPassword(password, user.salt);
 

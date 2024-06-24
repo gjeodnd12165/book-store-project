@@ -39,7 +39,7 @@ export class UserController {
   @HttpCode(200)
   signIn(@Body() body: SignInRequestBodyDto): Promise<SignInResponseDto> {
     const { email, password } = body;
-    
+
     return this.authService.signIn(email, password);
   }
 
