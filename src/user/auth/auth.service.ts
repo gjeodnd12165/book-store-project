@@ -8,20 +8,36 @@ import { UserService } from '../user.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInRequestBodyDto, SignInResponseDto } from './dto/signIn.dto';
 import * as crypto from 'crypto';
+import { InjectConnection } from '@nestjs/sequelize';
+import { Sequelize } from 'sequelize-typescript';
+import { Transaction } from 'sequelize';
+import { User } from '../user.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectConnection()
+    private readonly sequelize: Sequelize,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(
-    signInRequestDto: SignInRequestBodyDto,
-  ): Promise<SignInResponseDto> {
-    const { email, password } = signInRequestDto;
+  signUp(
+    email: string,
+    password: string,
+    username: string,
+  ): Promise<User> {
+    const salt: string = crypto.randomBytes(10).toString('base64');
+    const hashedPassword: string = this.getHashedPassword(password, salt);
+    
+    return this.userService.create(email, username, hashedPassword, salt);
+  }
 
+  async signIn(
+    email: string,
+    password: string,
+  ): Promise<SignInResponseDto> {
     const user = await this.userService.findOneByEmail({
       email,
     });

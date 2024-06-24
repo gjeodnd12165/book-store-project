@@ -13,6 +13,24 @@ export class UserService {
     @InjectModel(User)
     private readonly userModel: typeof User,
   ) {}
+  
+  create(
+    email: string,
+    username: string,
+    hashedPassword: string,
+    salt: string,
+  ): Promise<User> {
+    return this.sequelize.transaction((t: Transaction) => {
+      return this.userModel.create({
+        email: email,
+        username: username,
+        password: hashedPassword,
+        salt: salt,
+      }, {
+        transaction: t
+      });
+    })
+  }
 
   findOneByEmail(
     fetchByEmailUserRequestParamDto: FetchUserByEmailRequestParamDto,

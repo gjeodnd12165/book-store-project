@@ -16,6 +16,7 @@ import {
   FetchProfileRequestDto,
   FetchProfileResponseDto,
 } from './auth/dto/fetch-profile.dto';
+import { SignUpRequestBodyDto } from './auth/dto/signup.dto';
 
 @Controller('users')
 export class UserController {
@@ -26,10 +27,20 @@ export class UserController {
     private readonly authService: AuthService,
   ) {}
 
+  @Post('signup')
+  @HttpCode(201)
+  signUp(@Body() body: SignUpRequestBodyDto) {
+    const { email, password, username } = body;
+
+    return this.authService.signUp(email, password, username);
+  }
+
   @Post('signin')
   @HttpCode(200)
   signIn(@Body() body: SignInRequestBodyDto): Promise<SignInResponseDto> {
-    return this.authService.signIn(body);
+    const { email, password } = body;
+    
+    return this.authService.signIn(email, password);
   }
 
   @UseGuards(AuthGuard)
