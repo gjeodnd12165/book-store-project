@@ -23,6 +23,9 @@
       ],
       "@app/model/*": [
         "libs/model/src/*"
+      ],
+      "@app/*": [
+        "src/*"
       ]
     }
   }

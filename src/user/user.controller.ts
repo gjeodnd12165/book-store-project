@@ -9,14 +9,14 @@ import {
   Inject,
   forwardRef,
 } from '@nestjs/common';
-import { AuthService } from './auth/auth.service';
-import { SignInRequestBodyDto, SignInResponseDto } from './auth/dto/signIn.dto';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthService } from '@app/auth/auth.service';
+import { SignInRequestBodyDto, SignInResponseDto } from '@app/auth/dto/signIn.dto';
+import { AuthGuard } from '@app/auth/auth.guard';
 import {
   FetchProfileRequestDto,
   FetchProfileResponseDto,
-} from './auth/dto/fetch-profile.dto';
-import { SignUpRequestBodyDto } from './auth/dto/signup.dto';
+} from '@app/auth/dto/fetch-profile.dto';
+import { SignUpRequestBodyDto } from '@app/auth/dto/signup.dto';
 
 @Controller('users')
 export class UserController {

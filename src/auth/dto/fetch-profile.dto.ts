@@ -9,8 +9,4 @@ export class RequestWithAuth {
 
 export class FetchProfileRequestDto extends RequestWithAuth {}
 
-export class FetchProfileResponseDto extends Profile {
-  id: string;
-  email: string;
-  name: string;
-}
+export class FetchProfileResponseDto extends Profile {}

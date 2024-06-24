@@ -4,14 +4,14 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from '../user.service';
+import { UserService } from '@app/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { SignInRequestBodyDto, SignInResponseDto } from './dto/signIn.dto';
 import * as crypto from 'crypto';
 import { InjectConnection } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { Transaction } from 'sequelize';
-import { User } from '../user.entity';
+import { User } from '@app/user/user.entity';
 
 @Injectable()
 export class AuthService {
