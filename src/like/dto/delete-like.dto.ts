@@ -1,16 +1,16 @@
 import { IsNumber } from 'class-validator';
 import { TransformToNumber } from 'src/transformer/transformToNumber';
 
-export class RemoveLikeRequestBodyDto {
+export class DeleteLikeRequestBodyDto {
   @TransformToNumber()
   @IsNumber()
   readonly userId: number;
 }
 
-export class RemoveLikeRequestParamDto {
+export class DeleteLikeRequestParamDto {
   @TransformToNumber()
   @IsNumber()
   readonly bookId: number;
 }
 
-export class RemoveLikeResponseDto {}
+export class DeleteLikeResponseDto {}

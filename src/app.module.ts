@@ -6,6 +6,8 @@ import { CategoryModule } from './category/category.module';
 import { BookModule } from './book/book.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
+import { LikeModule } from './like/like.module';
+import { CartItemModule } from './cart-item/cart-item.module';
 
 @Module({
   imports: [
@@ -17,13 +19,14 @@ import { UserModule } from './user/user.module';
       password: 'root',
       database: 'BookShop',
       autoLoadModels: true,
-      synchronize: false, // temporal
+      synchronize: true, // temporal
     }),
     ConfigModule.forRoot(),
     CategoryModule,
     BookModule,
-    // LikeModule,
+    LikeModule,
     UserModule,
+    CartItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
