@@ -1,12 +1,14 @@
 import {
   IsBoolean,
   IsDate,
+  IsInstance,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
 import { TransformToNumber } from 'src/transformer/transformToNumber';
 import { Transform } from 'class-transformer';
+import { Book } from '../book.entity';
 
 export class FetchBooksRequestQueryDto {
   @IsOptional()
@@ -30,7 +32,7 @@ export class FetchBooksRequestQueryDto {
   readonly page: number = 1;
 }
 
-export class FetchBookResponseDto {
+class FetchBooksResponseBooksDto {
   @IsNumber()
   readonly id: number;
 
@@ -72,6 +74,25 @@ export class FetchBookResponseDto {
   readonly pub_date: Date;
 }
 
+class FetchBooksResponsePaginationDto {
+  @IsNumber()
+  totalBooks: number;
+
+  @IsNumber()
+  listNum: number;
+
+  @IsNumber()
+  currentPage: number;
+}
+
+export class FetchBooksResponseDto {
+  @IsInstance(Book, { each: true })
+  books: FetchBooksResponseBooksDto[];
+
+  @IsInstance(FetchBooksResponsePaginationDto)
+  pagination: FetchBooksResponsePaginationDto;
+}
+
 export class FetchBookRequestBodyDto {
   @TransformToNumber()
   @IsNumber()
@@ -84,7 +105,7 @@ export class FetchBookRequestParamDto {
   readonly bookId: number;
 }
 
-export class FetchDetailedBookResponseDto extends FetchBookResponseDto {
+export class FetchDetailedBookResponseDto extends FetchBooksResponseDto {
   @IsOptional()
   @IsString()
   readonly category_name?: string;

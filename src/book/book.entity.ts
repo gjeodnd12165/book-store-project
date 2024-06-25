@@ -32,8 +32,8 @@ export class Book extends Model<Book> {
   @Column({ type: DataType.STRING(45) })
   readonly author: string;
 
-  @Column({ type: DataType.INTEGER })
-  readonly isbn: number;
+  @Column({ type: DataType.STRING })
+  readonly isbn: string;
 
   @Column({ type: DataType.INTEGER })
   readonly pages: number;

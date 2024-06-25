@@ -5,6 +5,7 @@ import {
   FetchBookRequestParamDto,
   FetchDetailedBookResponseDto,
   FetchBooksRequestQueryDto,
+  FetchBooksResponseDto,
 } from './dto/fetch-book.dto';
 
 @Controller('books')
@@ -15,7 +16,7 @@ export class BookController {
   @HttpCode(200)
   findAll(
     @Query() query: FetchBooksRequestQueryDto,
-  ): Promise<FetchDetailedBookResponseDto[]> {
+  ): Promise<FetchBooksResponseDto> {
     const { categoryId, recentDays, listNum, page } = query;
 
     return this.bookService.findAll(categoryId, recentDays, listNum, page);

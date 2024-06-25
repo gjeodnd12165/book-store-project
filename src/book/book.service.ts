@@ -4,7 +4,7 @@ import {
   FetchBookRequestParamDto,
   FetchDetailedBookResponseDto,
   FetchBooksRequestQueryDto,
-  FetchBookResponseDto,
+  FetchBooksResponseDto,
 } from './dto/fetch-book.dto';
 import { InjectConnection, InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
@@ -31,7 +31,7 @@ export class BookService {
     recentDays: number,
     listNum: number,
     page: number,
-  ): Promise<FetchDetailedBookResponseDto[]> {
+  ): Promise<FetchBooksResponseDto> {
     return this.sequelize.transaction(async (t: Transaction) => {
       let condition = {};
 
@@ -74,16 +74,14 @@ export class BookService {
         subQuery: false,
       });
 
-      console.log(books);
-      console.log('=======================');
-
-      const transformedBooks = plainToInstance(FetchBookResponseDto, books, {
-        excludeExtraneousValues: true,
-      });
-
-      console.log(transformedBooks);
-
-      return transformedBooks;
+      return {
+        books: books,
+        pagination: {
+          totalBooks: books.length,
+          listNum: listNum,
+          currentPage: page,
+        }
+      }
     });
   }
 

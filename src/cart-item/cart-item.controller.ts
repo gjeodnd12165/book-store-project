@@ -13,7 +13,6 @@ import {
 import { CartItemService } from './cart-item.service';
 import { CreateCartItemRequestBodyDto } from './dto/create-cart-item.dto';
 import { AuthGuard } from '@app/auth/auth.guard';
-import { RequestWithAuth } from '@app/auth/dto/fetch-profile.dto';
 import { FetchCartItemsRequestParamDto } from './dto/fetch-cart-items.dto';
 import { User } from '@app/transformer/user.decorator';
 import { DeleteCartItemRequestDto } from './dto/delete-cart-item.dto';

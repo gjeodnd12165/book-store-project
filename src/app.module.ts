@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { LikeModule } from './like/like.module';
 import { CartItemModule } from './cart-item/cart-item.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { CartItemModule } from './cart-item/cart-item.module';
     LikeModule,
     UserModule,
     CartItemModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],

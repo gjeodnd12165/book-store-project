@@ -21,8 +21,6 @@ import { SignUpRequestBodyDto } from '@app/auth/dto/signup.dto';
 @Controller('users')
 export class UserController {
   constructor(
-    // @Inject()
-    // private readonly userService: UserService,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
