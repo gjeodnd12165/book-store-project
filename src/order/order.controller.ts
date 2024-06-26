@@ -9,10 +9,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @UseGuards(AuthGuard)
-  create(
-    @Body() body: CreateOrderRequestBodyDto,
-    @User('id') userId: number, 
-  ) {
+  create(@Body() body: CreateOrderRequestBodyDto, @User('id') userId: number) {
     const { cartItemIds, deilvery } = body;
     const { address, receiver, contact } = deilvery;
 
@@ -22,14 +19,11 @@ export class OrderController {
       receiver,
       contact,
       userId,
-    )
+    );
   }
 
   @UseGuards(AuthGuard)
-  findAll(
-    @User('id') userId: number,
-  ) {
-
+  findAll(@User('id') userId: number) {
     return this.orderService.findAll(userId);
   }
 }

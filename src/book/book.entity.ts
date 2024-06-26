@@ -1,3 +1,4 @@
+import { Factory } from 'nestjs-seeder';
 import {
   BelongsTo,
   Column,
@@ -7,7 +8,8 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Category } from 'src/category/category.entity';
+import { Category } from '@app/category/category.entity';
+import { fakerKO as faker } from '@faker-js/faker';
 
 @Table({ tableName: 'book', timestamps: false })
 export class Book extends Model<Book> {

@@ -1,6 +1,14 @@
 import { Book } from '@app/book/book.entity';
 import { User } from '@app/user/user.entity';
-import { BelongsTo, Column, DataType, ForeignKey, Index, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  ForeignKey,
+  Index,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 
 @Table({ tableName: 'cartItem', timestamps: false })
 export class CartItem extends Model<CartItem> {

@@ -8,7 +8,9 @@ import { OrderedBook } from './ordered-book.entity';
 import { CartItem } from '@app/cart-item/cart-item.entity';
 
 @Module({
-  imports: [SequelizeModule.forFeature([Order, Delivery, OrderedBook, CartItem])],
+  imports: [
+    SequelizeModule.forFeature([Order, Delivery, OrderedBook, CartItem]),
+  ],
   controllers: [OrderController],
   providers: [OrderService],
 })

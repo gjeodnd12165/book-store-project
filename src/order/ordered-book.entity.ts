@@ -1,6 +1,13 @@
-import { Book } from "@app/book/book.entity";
-import { Order } from "@app/order/order.entity";
-import { Column, DataType, ForeignKey, Index, Model, Table } from "sequelize-typescript";
+import { Book } from '@app/book/book.entity';
+import { Order } from '@app/order/order.entity';
+import {
+  Column,
+  DataType,
+  ForeignKey,
+  Index,
+  Model,
+  Table,
+} from 'sequelize-typescript';
 
 @Table({ tableName: 'orderedBook', timestamps: false })
 export class OrderedBook extends Model<OrderedBook> {

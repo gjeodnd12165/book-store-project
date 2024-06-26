@@ -23,8 +23,8 @@ export class OrderService {
     @InjectModel(OrderedBook)
     private readonly orderedBookModel: typeof OrderedBook,
   ) {}
-  
-  async create (
+
+  async create(
     cartItemIds: number[],
     address: string,
     receiver: string,
@@ -32,28 +32,34 @@ export class OrderService {
     userId: number,
   ) {
     return this.sequelize.transaction(async (t: Transaction) => {
-      const createdDelivery = await this.deilveryModel.create({
-        address,
-        receiver,
-        contact,
-      }, {
-        transaction: t,
-      });
+      const createdDelivery = await this.deilveryModel.create(
+        {
+          address,
+          receiver,
+          contact,
+        },
+        {
+          transaction: t,
+        },
+      );
 
-      const createdOrder = await this.orderModel.create({
-        delivery_id: createdDelivery.id,
-        user_id: userId,
-      }, {
-        transaction: t
-      });
+      const createdOrder = await this.orderModel.create(
+        {
+          delivery_id: createdDelivery.id,
+          user_id: userId,
+        },
+        {
+          transaction: t,
+        },
+      );
 
       const cartItems = await this.cartItemModel.findAll({
         where: {
           id: {
-            [Op.in]: cartItemIds
-          }
+            [Op.in]: cartItemIds,
+          },
         },
-        transaction: t
+        transaction: t,
       });
 
       const createdOrderedBook = await this.orderedBookModel.bulkCreate(
@@ -61,18 +67,18 @@ export class OrderService {
           id: cartItem.id,
           order_id: createdOrder.id,
           book_id: cartItem.book_id,
-          quantity: cartItem.quantity
+          quantity: cartItem.quantity,
         })),
         {
-          transaction: t
-        }
+          transaction: t,
+        },
       );
 
       const deleteCount = await this.cartItemModel.destroy({
         where: {
           id: {
-            [Op.in]: cartItemIds
-          }
+            [Op.in]: cartItemIds,
+          },
         },
         transaction: t,
       });
@@ -84,16 +90,31 @@ export class OrderService {
     });
   }
 
-  findAll(
-    userId: number,
-  ): Promise<OrderedBook[]> {
-    return this.sequelize.transaction((async (t: Transaction) => {
+  findAll(userId: number): Promise<OrderedBook[]> {
+    return this.sequelize.transaction(async (t: Transaction) => {
       return await this.orderedBookModel.findAll({
         attributes: [
           ['order_id', 'id'],
           [this.sequelize.fn('COUNT', this.sequelize.col('*')), 'totalTypes'],
-          [this.sequelize.fn('CONVERT', this.sequelize.fn('SUM', this.sequelize.literal('book.price*orderedBook.quantity')), this.sequelize.literal('SIGNED')), 'totalPrice'],
-          [this.sequelize.fn('CONVERT', this.sequelize.fn('SUM', this.sequelize.col('quantity')), this.sequelize.literal('SIGNED')), 'totalQuantity'],
+          [
+            this.sequelize.fn(
+              'CONVERT',
+              this.sequelize.fn(
+                'SUM',
+                this.sequelize.literal('book.price*orderedBook.quantity'),
+              ),
+              this.sequelize.literal('SIGNED'),
+            ),
+            'totalPrice',
+          ],
+          [
+            this.sequelize.fn(
+              'CONVERT',
+              this.sequelize.fn('SUM', this.sequelize.col('quantity')),
+              this.sequelize.literal('SIGNED'),
+            ),
+            'totalQuantity',
+          ],
           [this.sequelize.col('book.title'), 'title'],
         ],
         include: [
@@ -106,19 +127,19 @@ export class OrderService {
               {
                 model: Delivery,
                 as: 'delivery',
-                attributes: ['address', 'receiver', 'contact']
-              }
-            ]
+                attributes: ['address', 'receiver', 'contact'],
+              },
+            ],
           },
           {
             model: Book,
             as: 'book',
-            attributes: []
-          }
+            attributes: [],
+          },
         ],
         group: ['order_id'],
-        transaction: t
+        transaction: t,
       });
-    }))
+    });
   }
 }

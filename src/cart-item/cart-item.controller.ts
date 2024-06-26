@@ -29,7 +29,7 @@ export class CartItemController {
     @User('id') userId: number,
   ) {
     const { bookId, quantity } = body;
-    
+
     return this.cartItemService.create(bookId, quantity, userId);
   }
 
@@ -48,10 +48,7 @@ export class CartItemController {
   @Post()
   @HttpCode(200)
   @UseGuards(AuthGuard)
-  delete(
-    @Param() param: DeleteCartItemRequestDto,
-    @User('id') userId: number,
-  ) {
+  delete(@Param() param: DeleteCartItemRequestDto, @User('id') userId: number) {
     const { cartItemId } = param;
 
     return this.cartItemService.delete(cartItemId, userId);

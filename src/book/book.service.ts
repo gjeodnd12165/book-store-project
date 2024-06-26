@@ -80,8 +80,8 @@ export class BookService {
           totalBooks: books.length,
           listNum: listNum,
           currentPage: page,
-        }
-      }
+        },
+      };
     });
   }
 

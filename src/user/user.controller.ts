@@ -10,7 +10,10 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { AuthService } from '@app/auth/auth.service';
-import { SignInRequestBodyDto, SignInResponseDto } from '@app/auth/dto/signIn.dto';
+import {
+  SignInRequestBodyDto,
+  SignInResponseDto,
+} from '@app/auth/dto/signIn.dto';
 import { AuthGuard } from '@app/auth/auth.guard';
 import {
   FetchProfileRequestDto,
