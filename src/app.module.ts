@@ -21,7 +21,10 @@ import { SeederModule } from './seeder/seeder.module';
       password: 'root',
       database: 'BookShop',
       autoLoadModels: true,
-      synchronize: true, // temporal
+      synchronize: true, // temporal,
+      sync: {
+        force: true,
+      }
     }),
     ConfigModule.forRoot(),
     CategoryModule,
