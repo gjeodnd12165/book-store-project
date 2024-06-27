@@ -9,7 +9,7 @@ import { UserModule } from './user/user.module';
 import { LikeModule } from './like/like.module';
 import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderModule } from './order/order.module';
-import { SeederService } from './seeder.service';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -30,8 +30,9 @@ import { SeederService } from './seeder.service';
     UserModule,
     CartItemModule,
     OrderModule,
+    SeederModule,
   ],
   controllers: [AppController],
-  providers: [AppService, SeederService],
+  providers: [AppService],
 })
 export class AppModule {}

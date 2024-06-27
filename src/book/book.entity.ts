@@ -1,4 +1,3 @@
-import { Factory } from 'nestjs-seeder';
 import {
   BelongsTo,
   Column,
@@ -17,7 +16,7 @@ export class Book extends Model<Book> {
   @Index({ using: 'BTREE', order: 'ASC', unique: true })
   readonly id: number;
 
-  @Column({ type: DataType.STRING(45) })
+  @Column({ type: DataType.STRING })
   readonly title: string;
 
   @Column({ type: DataType.INTEGER })
@@ -31,7 +30,7 @@ export class Book extends Model<Book> {
   @Column({ type: DataType.STRING })
   readonly form: string;
 
-  @Column({ type: DataType.STRING(45) })
+  @Column({ type: DataType.STRING })
   readonly author: string;
 
   @Column({ type: DataType.STRING })
@@ -40,13 +39,13 @@ export class Book extends Model<Book> {
   @Column({ type: DataType.INTEGER })
   readonly pages: number;
 
-  @Column({ type: DataType.STRING(500) })
+  @Column({ type: DataType.STRING })
   readonly summary: string;
 
   @Column({ type: DataType.STRING })
   readonly detail: string;
 
-  @Column({ type: DataType.STRING(45) })
+  @Column({ type: DataType.STRING })
   readonly contents: string;
 
   @Column({ type: DataType.INTEGER })
